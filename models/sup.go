@@ -1,0 +1,26 @@
+package models
+
+
+import "gorm.io/gorm"
+
+type Sup struct {
+	gorm.Model
+
+	Name  string `gorm:"not null" json:"name"`
+	ProvinceID uint   
+	// Users []User  
+	AsmID uint
+	Signature    string `json:"signature"`
+}
+
+func (p *Sup) Count(db *gorm.DB) int64 {
+	var total int64
+	db.Model(&Sup{}).Count(&total)
+	return total
+}
+
+func (p *Sup) Paginate(db *gorm.DB, limit int, offset int) interface{} {
+	sp := []Sup{}
+	db.Offset(offset).Limit(limit).Find(&sp)
+	return sp
+}
