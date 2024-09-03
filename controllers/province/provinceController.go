@@ -17,6 +17,21 @@ func GetProvinces(c *fiber.Ctx) error {
 	return c.JSON(models.Paginate(database.DB, &models.Province{}, p, l))
 }
 
+// query data
+func GetProvinceByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var provinces []models.Province
+	db.Where("id = ?", id).Find(&provinces)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "provinces by id found", 
+		"data": provinces,
+	})
+}
+
+
 // Get one data
 func GetProvince(c *fiber.Ctx) error {
 	id := c.Params("id")

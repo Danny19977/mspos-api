@@ -60,8 +60,24 @@ func UpdatePos(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		Name      string `json:"name"`
-		Signature string `json:"signature"`
+		Name               string `json:"name"` // Celui qui vend
+		Shop               string `json:"shop"`                 // Nom du shop
+		Manager            string `json:"manager"`              // name of the onwer of the pos
+		Commune            string `json:"commune"`
+		Avenue             string `json:"avenue"`
+		Quartier           string `json:"quartier"`
+		Reference          string `json:"reference"`
+		Telephone          int64  `json:"telephone"`
+		Eparasol           string `json:"eparasol"`
+		Etable             string `json:"etable"`
+		Ekiosk             bool   `json:"ekiosk"`
+		InputGroupSelector string `json:"inputgroupselector"`
+		Cparasol           string `json:"cparasol"`
+		Ctable             string `json:"ctable"`
+		Ckiosk             bool   `json:"Ckiosk"`
+		ProvinceID         uint   `json:"province_id"`
+		AreaID             uint   `json:"area_id"`
+		Signature          string `json:"signature"`
 	}
 
 	var updateData UpdateData
@@ -80,6 +96,22 @@ func UpdatePos(c *fiber.Ctx) error {
 
 	db.First(&pos, id)
 	pos.Name = updateData.Name
+	pos.Shop = updateData.Shop
+	pos.Manager = updateData.Manager
+	pos.Commune = updateData.Commune
+	pos.Avenue = updateData.Avenue
+	pos.Quartier = updateData.Quartier
+	pos.Reference = updateData.Reference
+	pos.Telephone = updateData.Telephone
+	pos.Eparasol = updateData.Eparasol
+	pos.Etable = updateData.Etable
+	pos.Ekiosk = updateData.Ekiosk
+	pos.InputGroupSelector = updateData.InputGroupSelector
+	pos.Cparasol = updateData.Cparasol
+	pos.Ctable = updateData.Ctable
+	pos.Ckiosk = updateData.Ckiosk
+	pos.ProvinceID = updateData.ProvinceID
+	pos.AreaID = updateData.AreaID 
 	pos.Signature = updateData.Signature
 
 	db.Save(&pos)
@@ -87,7 +119,7 @@ func UpdatePos(c *fiber.Ctx) error {
 	return c.JSON(
 		fiber.Map{
 			"status":  "success",
-			"message": "manager  updated success",
+			"message": "POS updated success",
 			"data":    pos,
 		},
 	)
@@ -106,7 +138,7 @@ func DeletePos(c *fiber.Ctx) error {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
-				"message": "No Province name found",
+				"message": "No POS name found",
 				"data":    nil,
 			},
 		)
@@ -117,7 +149,7 @@ func DeletePos(c *fiber.Ctx) error {
 	return c.JSON(
 		fiber.Map{
 			"status":  "success",
-			"message": "Province deleted success",
+			"message": "POS deleted success",
 			"data":    nil,
 		},
 	)

@@ -1,6 +1,8 @@
 package models
 
 import (
+	"time"
+
 	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
@@ -11,6 +13,7 @@ type User struct {
 	Fullname        string `gorm:"not null" json:"fullname"`
 	Email           string `json:"email" gorm:"unique; not null"`
 	Phone           string `json:"phone"`
+	Title           string `json:"title"`
 	Password        string `json:"password" validate:"required"`
 	PasswordConfirm string `json:"password_confirm" gorm:"-"`
 
@@ -25,6 +28,7 @@ type User struct {
 	Status     bool   `json:"status"`
 	Signature  string `json:"signature"`
 
+
 	UserLogs []UserLogs
 }
 
@@ -33,6 +37,7 @@ type UserResponse struct {
 	Fullname   string `json:"fullname"`
 	Email      string `json:"email"`
 	Phone      string `json:"phone"`
+	Title      string `json:"title"`
 	Role       string `json:"role"`
 	Area       uint   `json:"area_id"`
 	Province   uint   `json:"province_id"`
@@ -41,6 +46,8 @@ type UserResponse struct {
 	Permission string `json:"permission"`
 	Status     bool   `json:"status"`
 	Signature  string `json:"signature"`
+	CreatedAt time.Time `json:"created_at"`
+    UpdatedAt time.Time `json:"updated_at"`
 }
 
 type Login struct {

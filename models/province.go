@@ -5,7 +5,7 @@ import "gorm.io/gorm"
 type Province struct {
 	gorm.Model
 
-	Name  string 
+	Name  string  `json:"name"`
 	// Users []User 
 	// Areas []Area 
 	// Sups []Sup 

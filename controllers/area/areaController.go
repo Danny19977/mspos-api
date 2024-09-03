@@ -23,7 +23,7 @@ func GetArea(c *fiber.Ctx) error {
 	db := database.DB
 	var area models.Area
 	db.Find(&area, id)
-	if area.Shop == "" {
+	if area.Name == "" {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
@@ -60,23 +60,10 @@ func UpdateArea(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		Shop               string `json:"shop"`
-		Manager            string `json:"manager"` // name of the onwer of the pos
-		Commune            string `json:"commune"`
-		Avenue             string `json:"avenue"`
-		Quartier           string `json:"quartier"`
-		Reference          string `json:"reference"`
-		Number             int64  `json:"number"`
-		Eparasol           string `json:"eparasol"`
-		Etable             string `json:"etable"`
-		Ekiosk             bool   `json:"ekiosk"`
-		InputGroupSelector string `json:"inputgroupselector"`
-		Cparasol           string `json:"cparasol"`
-		Ctable             string `json:"ctable"`
-		Ckiosk             bool   `json:"Ckiosk"`
-		ProvinceID         uint   `json:"province_id"`
-		UserID             uint   `json:"user_id"`
-		Signature          string `json:"signature"`
+		Name       string `json:"name"`
+		ProvinceID uint   `json:"province_id"`
+		SupID      uint   `json:"sup_id"`
+		Signature  string `json:"signature"`
 	}
 
 	var updateData UpdateData
@@ -94,22 +81,9 @@ func UpdateArea(c *fiber.Ctx) error {
 	area := new(models.Area)
 
 	db.First(&area, id)
-	area.Shop = updateData.Shop
-	area.Manager = updateData.Manager
-	area.Commune = updateData.Commune
-	area.Avenue = updateData.Avenue
-	area.Quartier = updateData.Quartier
-	area.Reference = updateData.Reference
-	area.Number = updateData.Number
-	area.Eparasol = updateData.Eparasol
-	area.Etable = updateData.Etable
-	area.Ekiosk = updateData.Ekiosk
-	area.InputGroupSelector = updateData.InputGroupSelector
-	area.Cparasol = updateData.Cparasol
-	area.Ctable = updateData.Ctable
-	area.Ckiosk = updateData.Ckiosk
+	area.Name = updateData.Name
 	area.ProvinceID = updateData.ProvinceID
-	area.UserID = updateData.UserID
+	area.SupID = updateData.SupID
 	area.Signature = updateData.Signature
 
 	db.Save(&area)
@@ -132,7 +106,7 @@ func DeleteArea(c *fiber.Ctx) error {
 
 	var area models.Area
 	db.First(&area, id)
-	if area.Shop == "" {
+	if area.Name == "" {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",

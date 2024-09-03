@@ -120,6 +120,7 @@ func Login(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "success",
+		"token":   token,
 	})
 
 }
@@ -132,11 +133,13 @@ func AuthUser(c *fiber.Ctx) error {
 
 	u := models.User{}
 
-	database.DB.Where("id = ?", userId).Preload("Province").First(&u)
+	database.DB.Where("id = ?", userId).First(&u)
 
 	r := &models.UserResponse{
+		Id:         u.ID,
 		Fullname:   u.Fullname,
 		Email:      u.Email,
+		Title:      u.Title,
 		Phone:      u.Phone,
 		Role:       u.Role,
 		Area:       u.AreaID,
@@ -145,6 +148,8 @@ func AuthUser(c *fiber.Ctx) error {
 		Pos:        u.PosID,
 		Permission: u.Permission,
 		Status:     u.Status,
+		CreatedAt:  u.CreatedAt,
+		UpdatedAt:  u.UpdatedAt,
 	}
 
 	return c.JSON(r)
@@ -170,11 +175,12 @@ func UpdateInfo(c *fiber.Ctx) error {
 	type UpdateDataInput struct {
 		Fullname   string `json:"fullname"`
 		Email      string `json:"email"`
+		Title      string `json:"title"`
 		Phone      string `json:"phone"`
-		AreaID     uint `json:"area_id"`
-		ProvinceID uint `json:"province_id"`
-		SupID      uint `json:"sup_id"`
-		PosID      uint `json:"pos_id"`
+		AreaID     uint   `json:"area_id"`
+		ProvinceID uint   `json:"province_id"`
+		SupID      uint   `json:"sup_id"`
+		PosID      uint   `json:"pos_id"`
 		Role       string `json:"role"`
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
@@ -204,6 +210,7 @@ func UpdateInfo(c *fiber.Ctx) error {
 	db.First(&user, userId)
 	user.Fullname = updateData.Fullname
 	user.Email = updateData.Email
+	user.Title = updateData.Title
 	user.Phone = updateData.Phone
 	user.AreaID = updateData.AreaID
 	user.ProvinceID = updateData.ProvinceID

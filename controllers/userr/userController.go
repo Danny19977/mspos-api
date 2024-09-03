@@ -59,7 +59,7 @@ func CreateUser(c *fiber.Ctx) error {
 				"data":    nil,
 			},
 		)
-	} 
+	}
 
 	if p.Password != p.PasswordConfirm {
 		c.Status(400)
@@ -71,6 +71,7 @@ func CreateUser(c *fiber.Ctx) error {
 	user := &models.User{
 		Fullname:   p.Fullname,
 		Email:      p.Email,
+		Title:      p.Title,
 		Phone:      p.Phone,
 		AreaID:     p.AreaID,
 		ProvinceID: p.ProvinceID,
@@ -99,7 +100,6 @@ func CreateUser(c *fiber.Ctx) error {
 			"message": m,
 		})
 	}
-	
 
 	// database.DB.Create(user)
 
@@ -120,11 +120,12 @@ func UpdateUser(c *fiber.Ctx) error {
 	type UpdateDataInput struct {
 		Fullname   string `json:"fullname"`
 		Email      string `json:"email"`
+		Title      string `json:"title"`
 		Phone      string `json:"phone"`
-		AreaID     uint `json:"area_id"`
-		ProvinceID uint `json:"province_id"`
-		SupID      uint `json:"sup_id"`
-		PosID      uint `json:"pos_id"`
+		AreaID     uint   `json:"area_id"`
+		ProvinceID uint   `json:"province_id"`
+		SupID      uint   `json:"sup_id"`
+		PosID      uint   `json:"pos_id"`
 		Role       string `json:"role"`
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
@@ -148,6 +149,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	db.First(&user, id)
 	user.Fullname = updateData.Fullname
 	user.Email = updateData.Email
+	user.Title = updateData.Title
 	user.Phone = updateData.Phone
 	user.AreaID = updateData.AreaID
 	user.ProvinceID = updateData.ProvinceID

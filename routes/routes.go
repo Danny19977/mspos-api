@@ -47,6 +47,7 @@ func Setup(app *fiber.App){
 	// Province controller
 	prov := api.Group("/provinces") 
 	prov.Get("/all", province.GetProvinces)
+	prov.Get("/all/:id", province.GetProvinceByID)
 	prov.Post("/create", province.CreateProvince)
 	prov.Get("/get/:id", province.GetProvince)
 	prov.Patch("/update/:id", province.UpdateProvince)
