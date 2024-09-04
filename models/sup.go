@@ -1,15 +1,13 @@
 package models
 
-
 import "gorm.io/gorm"
 
 type Sup struct {
 	gorm.Model
 
 	Name  string `gorm:"not null" json:"name"`
-	ProvinceID uint   
-	// Users []User  
-	AsmID uint
+	ProvinceID uint   `gorm:"not null" json:"province_id"` 
+	AsmID uint  `json:"asm_id"` 
 	Signature    string `json:"signature"`
 }
 

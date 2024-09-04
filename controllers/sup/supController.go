@@ -16,6 +16,37 @@ func GetSups(c *fiber.Ctx) error {
 
 	return c.JSON(models.Paginate(database.DB, &models.Sup{}, p, l))
 }
+ 
+
+// query data
+func GetSupASMByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var sup []models.Sup
+	db.Where("asm_id = ?", id).Find(&sup)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "Sup by id found", 
+		"data": sup,
+	})
+} 
+
+// query data
+func GetSupByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var sup []models.Sup
+	db.Where("province_id = ?", id).Find(&sup)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "Sup by id found", 
+		"data": sup,
+	})
+} 
+ 
+
 
 // Get one data
 func GetSup(c *fiber.Ctx) error {

@@ -35,6 +35,7 @@ func Register(c *fiber.Ctx) error {
 	u := &models.User{
 		Fullname:   nu.Fullname,
 		Email:      nu.Email,
+		Title:      nu.Title,
 		Phone:      nu.Phone,
 		AreaID:     nu.AreaID,
 		ProvinceID: nu.ProvinceID,

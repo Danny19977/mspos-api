@@ -17,6 +17,35 @@ func GetAreas(c *fiber.Ctx) error {
 	return c.JSON(models.Paginate(database.DB, &models.Area{}, p, l))
 }
 
+// query data
+func GetAreaByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var areas []models.Area
+	db.Where("province_id = ?", id).Find(&areas)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "areas by id found", 
+		"data": areas,
+	})
+}
+
+// query data
+func GetSupAreaByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var areas []models.Area
+	db.Where("sup_id = ?", id).Find(&areas)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "poss by id found", 
+		"data": areas,
+	})
+}
+
+
 // Get one data
 func GetArea(c *fiber.Ctx) error {
 	id := c.Params("id")

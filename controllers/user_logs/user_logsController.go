@@ -17,6 +17,7 @@ func GetUserLogs(c *fiber.Ctx) error {
 	return c.JSON(models.Paginate(database.DB, &models.UserLogs{}, p, l))
 }
 
+
 // Get one data
 func GetUserLog(c *fiber.Ctx) error {
 	id := c.Params("id")

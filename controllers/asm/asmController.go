@@ -43,7 +43,7 @@ func GetAsm(c *fiber.Ctx) error {
 
 // Create data
 func CreateAsm(c *fiber.Ctx) error {
-	p := &models.Area{}
+	p := &models.Asm{}
 
 	if err := c.BodyParser(&p); err != nil {
 		return err

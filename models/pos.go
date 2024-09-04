@@ -19,9 +19,10 @@ type Pos struct {
 	InputGroupSelector string `json:"inputgroupselector"`
 	Cparasol           string `json:"cparasol"`
 	Ctable             string `json:"ctable"`
-	Ckiosk             bool   `json:"Ckiosk"`
+	Ckiosk             bool   `json:"ckiosk"`
 	ProvinceID         uint   `gorm:"foreignKey:province_id" json:"province_id"`
 	AreaID             uint   `gorm:"foreignKey:area_id" json:"area_id"`
+	Status             bool   `json:"status"`
 	Signature          string `json:"signature"`
 }
 

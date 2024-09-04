@@ -1,15 +1,14 @@
 package models
 
-
 import "gorm.io/gorm"
 
 type Asm struct {
 	gorm.Model
 
-	Name  string `gorm:"not null" json:"name"`
-	Sups []Sup  
-	ProvinceID uint   
-	Signature    string `json:"signature"`
+	Name       string `gorm:"not null" json:"name"`
+	ProvinceID uint   `gorm:"foreignKey:province_id" json:"province_id"`
+	Signature  string `json:"signature"`
+	Sups       []Sup
 }
 
 func (p *Asm) Count(db *gorm.DB) int64 {

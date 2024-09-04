@@ -19,13 +19,29 @@ func GetUsers(c *fiber.Ctx) error {
 	return c.JSON(models.Paginate(database.DB, &models.User{}, p, l))
 }
 
+
+// query data
+func GetUserByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var users []models.User
+	db.Where("province_id = ?", id).Find(&users)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "users by id found", 
+		"data": users,
+	})
+}
+
+
 // Get one data
 func GetUser(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
-	var User models.User
-	db.Find(&User, id)
-	if User.Fullname == "" {
+	var user models.User
+	db.Find(&user, id)
+	if user.Fullname == "" {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
@@ -38,7 +54,7 @@ func GetUser(c *fiber.Ctx) error {
 		fiber.Map{
 			"status":  "success",
 			"message": "User found",
-			"data":    User,
+			"data":    user,
 		},
 	)
 }

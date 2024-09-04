@@ -17,6 +17,36 @@ func GetPoss(c *fiber.Ctx) error {
 	return c.JSON(models.Paginate(database.DB, &models.Pos{}, p, l))
 }
 
+// query data
+func GetPosByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var poss []models.Pos
+	db.Where("province_id = ?", id).Find(&poss)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "poss by id found", 
+		"data": poss,
+	})
+}
+
+// query data Area
+func GetPosAreaByID(c *fiber.Ctx) error {
+	id := c.Params("id")
+	db := database.DB
+	var poss []models.Pos
+	db.Where("area_id = ?", id).Find(&poss)
+	 
+	return c.JSON(fiber.Map{
+		"status": "success", 
+		"message": "poss by id found", 
+		"data": poss,
+	})
+}
+
+
+
 // Get one data
 func GetPos(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -60,9 +90,9 @@ func UpdatePos(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		Name               string `json:"name"` // Celui qui vend
-		Shop               string `json:"shop"`                 // Nom du shop
-		Manager            string `json:"manager"`              // name of the onwer of the pos
+		Name               string `json:"name"`    // Celui qui vend
+		Shop               string `json:"shop"`    // Nom du shop
+		Manager            string `json:"manager"` // name of the onwer of the pos
 		Commune            string `json:"commune"`
 		Avenue             string `json:"avenue"`
 		Quartier           string `json:"quartier"`
@@ -77,6 +107,7 @@ func UpdatePos(c *fiber.Ctx) error {
 		Ckiosk             bool   `json:"Ckiosk"`
 		ProvinceID         uint   `json:"province_id"`
 		AreaID             uint   `json:"area_id"`
+		Status             bool   `json:"status"`
 		Signature          string `json:"signature"`
 	}
 
@@ -111,7 +142,8 @@ func UpdatePos(c *fiber.Ctx) error {
 	pos.Ctable = updateData.Ctable
 	pos.Ckiosk = updateData.Ckiosk
 	pos.ProvinceID = updateData.ProvinceID
-	pos.AreaID = updateData.AreaID 
+	pos.AreaID = updateData.AreaID
+	pos.Status = updateData.Status
 	pos.Signature = updateData.Signature
 
 	db.Save(&pos)
