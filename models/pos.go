@@ -12,13 +12,13 @@ type Pos struct {
 	Avenue             string `json:"avenue"`
 	Quartier           string `json:"quartier"`
 	Reference          string `json:"reference"`
-	Telephone          int64  `json:"telephone"`
-	Eparasol           string `json:"eparasol"`
-	Etable             string `json:"etable"`
+	Telephone          string `json:"telephone"`
+	Eparasol           bool   `json:"eparasol"`
+	Etable             bool   `json:"etable"`
 	Ekiosk             bool   `json:"ekiosk"`
 	InputGroupSelector string `json:"inputgroupselector"`
-	Cparasol           string `json:"cparasol"`
-	Ctable             string `json:"ctable"`
+	Cparasol           bool   `json:"cparasol"`
+	Ctable             bool   `json:"ctable"`
 	Ckiosk             bool   `json:"ckiosk"`
 	ProvinceID         uint   `gorm:"foreignKey:province_id" json:"province_id"`
 	AreaID             uint   `gorm:"foreignKey:area_id" json:"area_id"`

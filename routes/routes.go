@@ -53,10 +53,10 @@ func Setup(app *fiber.App){
 	prov.Get("/get/:id", province.GetProvince)
 	prov.Put("/update/:id", province.UpdateProvince)
 	prov.Delete("/delete/:id", province.DeleteProvince)
- 
+
 
 	// Areas controller
-	ar := api.Group("/areas") 
+	ar := api.Group("/areas")
 	ar.Get("/all", area.GetAreas)
 	ar.Get("/all/:id", area.GetAreaByID)
 	ar.Get("/all-area/:id", area.GetSupAreaByID)

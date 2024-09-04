@@ -23,11 +23,11 @@ func GetPosByID(c *fiber.Ctx) error {
 	db := database.DB
 	var poss []models.Pos
 	db.Where("province_id = ?", id).Find(&poss)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "poss by id found", 
-		"data": poss,
+		"status":  "success",
+		"message": "poss by id found",
+		"data":    poss,
 	})
 }
 
@@ -37,15 +37,13 @@ func GetPosAreaByID(c *fiber.Ctx) error {
 	db := database.DB
 	var poss []models.Pos
 	db.Where("area_id = ?", id).Find(&poss)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "poss by id found", 
-		"data": poss,
+		"status":  "success",
+		"message": "poss by id found",
+		"data":    poss,
 	})
 }
-
-
 
 // Get one data
 func GetPos(c *fiber.Ctx) error {
@@ -97,13 +95,13 @@ func UpdatePos(c *fiber.Ctx) error {
 		Avenue             string `json:"avenue"`
 		Quartier           string `json:"quartier"`
 		Reference          string `json:"reference"`
-		Telephone          int64  `json:"telephone"`
-		Eparasol           string `json:"eparasol"`
-		Etable             string `json:"etable"`
+		Telephone          string `json:"telephone"`
+		Eparasol           bool   `json:"eparasol"`
+		Etable             bool   `json:"etable"`
 		Ekiosk             bool   `json:"ekiosk"`
 		InputGroupSelector string `json:"inputgroupselector"`
-		Cparasol           string `json:"cparasol"`
-		Ctable             string `json:"ctable"`
+		Cparasol           bool   `json:"cparasol"`
+		Ctable             bool   `json:"ctable"`
 		Ckiosk             bool   `json:"Ckiosk"`
 		ProvinceID         uint   `json:"province_id"`
 		AreaID             uint   `json:"area_id"`
