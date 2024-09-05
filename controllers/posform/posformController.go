@@ -23,7 +23,7 @@ func GetPosform(c *fiber.Ctx) error {
 	db := database.DB
 	var posform models.PosForm
 	db.Find(&posform, id)
-	if posform.Name == "" {
+	if posform.UserID == 0 {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
@@ -60,30 +60,30 @@ func UpdatePosform(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		Name       string `json:"name"`
-		Eqateur    int64  `json:"eqateur"`
-		Placement  int64  `json:"placement"`
-		Dhl        int64  `json:"dhl"`
-		Ar         int64  `json:"ar"`
-		Sbl        int64  `json:"sbl"`
-		Pmt        int64  `json:"pmt"`
-		Pmm        int64  `json:"pmm"`
-		Ticket     int64  `json:"ticket"`
-		Mtc        int64  `json:"mtc"`
-		Ws         int64  `json:"ws"`
-		Mast       int64  `json:"mast"`
-		Oris       int64  `json:"oris"`
-		Elite      int64  `json:"elite"`
-		Ck         int64  `json:"ck"`
-		Yes        int64  `json:"yes"`
-		Time       int64  `json:"time"`
-		Comment    string `json:"comment"`
-		AreaID     uint   `json:"area_id"`
-		ProvinceID uint   `json:"province_id"`
-		SupID      uint   `json:"sup_id"`
-		PosID      uint   `json:"pos_id"`
-		UserID     uint   `json:"user_id"`
-		Signature  string `json:"signature"`
+		// IdUnique    string  `json:"id_unique"`
+		Equateur int64  `json:"equateur"`
+		Sold     int64  `json:"sold"`
+		Dhl      int64  `json:"dhl"`
+		Ar       int64  `json:"ar"`
+		Sbl      int64  `json:"sbl"`
+		Pmt      int64  `json:"pmt"`
+		Pmm      int64  `json:"pmm"`
+		Ticket   int64  `json:"ticket"`
+		Mtc      int64  `json:"mtc"`
+		Ws       int64  `json:"ws"`
+		Mast     int64  `json:"mast"`
+		Oris     int64  `json:"oris"`
+		Elite    int64  `json:"elite"`
+		Ck       int64  `json:"ck"`
+		Yes      int64  `json:"yes"`
+		Time     int64  `json:"time"`
+		Comment  string `json:"comment"`
+		// ProvinceID uint   `json:"province_id"`
+		// AreaID     uint   `json:"area_id"`
+		// SupID      uint   `json:"sup_id"`
+		// PosID      uint   `json:"pos_id"`
+		// UserID     uint   `json:"user_id"`
+		Signature string `json:"signature"`
 	}
 
 	var updateData UpdateData
@@ -101,9 +101,9 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform := new(models.PosForm)
 
 	db.First(&posform, id)
-	posform.Name = updateData.Name
-	posform.Eqateur = updateData.Eqateur
-	posform.Placement = updateData.Placement
+	// posform.IdUnique = updateData.IdUnique
+	posform.Equateur = updateData.Equateur
+	posform.Sold = updateData.Sold
 	posform.Dhl = updateData.Dhl
 	posform.Ar = updateData.Ar
 	posform.Sbl = updateData.Sbl
@@ -119,11 +119,11 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform.Yes = updateData.Yes
 	posform.Time = updateData.Time
 	posform.Comment = updateData.Comment
-	posform.AreaID = updateData.AreaID
-	posform.ProvinceID = updateData.ProvinceID
-	posform.SupID = updateData.SupID
-	posform.PosID = updateData.PosID
-	posform.UserID = updateData.UserID
+	// posform.ProvinceID = updateData.ProvinceID
+	// posform.AreaID = updateData.AreaID
+	// posform.SupID = updateData.SupID
+	// posform.PosID = updateData.PosID
+	// posform.UserID = updateData.UserID
 	posform.Signature = updateData.Signature
 
 	db.Save(&posform)
@@ -146,7 +146,7 @@ func DeletePosform(c *fiber.Ctx) error {
 
 	var posform models.PosForm
 	db.First(&posform, id)
-	if posform.Name == "" {
+	if posform.UserID == 0 {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
