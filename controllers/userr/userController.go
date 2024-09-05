@@ -97,6 +97,7 @@ func CreateUser(c *fiber.Ctx) error {
 		Permission: p.Permission,
 		Image:      p.Image,
 		Status:     p.Status,
+		IsManager: p.IsManager,
 		Signature:  p.Signature,
 	}
 
@@ -146,6 +147,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
 		Status     bool   `json:"status"`
+		IsManager  bool   `json:"is_manager"`
 		Signature  string `json:"signature"`
 	}
 	var updateData UpdateDataInput
@@ -175,6 +177,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.Permission = updateData.Permission
 	user.Image = updateData.Image
 	user.Status = updateData.Status
+	user.IsManager = updateData.IsManager
 	user.Signature = updateData.Signature
 
 	db.Save(&user)
