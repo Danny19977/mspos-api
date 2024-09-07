@@ -6,6 +6,7 @@ import (
 	"github.com/kgermando/mspos-api/controllers/area"
 	"github.com/kgermando/mspos-api/controllers/asm"
 	authentification "github.com/kgermando/mspos-api/controllers/auth"
+	"github.com/kgermando/mspos-api/controllers/dashboard"
 	"github.com/kgermando/mspos-api/controllers/manager"
 	poss "github.com/kgermando/mspos-api/controllers/pos"
 	"github.com/kgermando/mspos-api/controllers/posform"
@@ -125,4 +126,8 @@ func Setup(app *fiber.App){
 	userLog.Get("/get/:id", userlogs.GetUserLog)
 	userLog.Put("/update/:id", userlogs.UpdateUserLog)
 	userLog.Delete("/delete/:id", userlogs.DeleteUserLog)
+
+
+	dash := api.Group("/dashboard")
+	dash.Get("/numeric-distribution", dashboard.NdDashboard)
 }
