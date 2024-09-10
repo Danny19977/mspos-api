@@ -40,7 +40,7 @@ func Register(c *fiber.Ctx) error {
 		AreaID:     nu.AreaID,
 		ProvinceID: nu.ProvinceID,
 		SupID:      nu.SupID,
-		PosID:      nu.PosID,
+		// PosID:      nu.PosID,
 		Role:       nu.Role,
 		Permission: nu.Permission,
 		Image:      nu.Image,
@@ -146,7 +146,7 @@ func AuthUser(c *fiber.Ctx) error {
 		Area:       u.AreaID,
 		Province:   u.ProvinceID,
 		Sup:        u.SupID,
-		Pos:        u.PosID,
+		// Pos:        u.PosID,
 		Permission: u.Permission,
 		Status:     u.Status,
 		CreatedAt:  u.CreatedAt,
@@ -160,7 +160,7 @@ func Logout(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:     "token",
 		Value:    "",
-		Expires:  time.Now().Add(-time.Hour), //1 day ,
+		Expires:  time.Now().Add(-time.Hour), // 1 day ,
 		HTTPOnly: true,
 	}
 	c.Cookie(&cookie)
@@ -181,7 +181,7 @@ func UpdateInfo(c *fiber.Ctx) error {
 		AreaID     uint   `json:"area_id"`
 		ProvinceID uint   `json:"province_id"`
 		SupID      uint   `json:"sup_id"`
-		PosID      uint   `json:"pos_id"`
+		// PosID      uint   `json:"pos_id"`
 		Role       string `json:"role"`
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
@@ -216,7 +216,7 @@ func UpdateInfo(c *fiber.Ctx) error {
 	user.AreaID = updateData.AreaID
 	user.ProvinceID = updateData.ProvinceID
 	user.SupID = updateData.SupID
-	user.PosID = updateData.PosID
+	// user.PosID = updateData.PosID
 	user.Role = updateData.Role
 	user.Permission = updateData.Permission
 	user.Image = updateData.Image

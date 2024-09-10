@@ -129,5 +129,8 @@ func Setup(app *fiber.App){
 
 
 	dash := api.Group("/dashboard")
-	dash.Get("/numeric-distribution", dashboard.NdDashboard)
+	nd := dash.Group("/numeric-distribution")
+	nd.Get("/table-view", dashboard.NdTableView)
+	nd.Get("/pos-area", dashboard.PosByArea)
+
 }

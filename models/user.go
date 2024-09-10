@@ -20,7 +20,7 @@ type User struct {
 	AreaID     uint `gorm:"foreignKey:area_id" json:"area_id"`
 	ProvinceID uint `gorm:"foreignKey:province_id" json:"province_id"`
 	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"`
-	PosID      uint `gorm:"foreignKey:pos_id" json:"pos_id"`
+	// PosID      uint `gorm:"foreignKey:pos_id" json:"pos_id"`
 
 	Role       string `json:"role"`
 	Permission string `json:"permission"`
@@ -42,7 +42,7 @@ type UserResponse struct {
 	Area       uint      `json:"area_id"`
 	Province   uint      `json:"province_id"`
 	Sup        uint      `json:"sup_id"`
-	Pos        uint      `json:"pos_id"`
+	// Pos        uint      `json:"pos_id"`
 	Permission string    `json:"permission"`
 	Status     bool      `json:"status"`
 	Signature  string    `json:"signature"`

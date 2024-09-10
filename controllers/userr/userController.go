@@ -92,7 +92,7 @@ func CreateUser(c *fiber.Ctx) error {
 		AreaID:     p.AreaID,
 		ProvinceID: p.ProvinceID,
 		SupID:      p.SupID,
-		PosID:      p.PosID,
+		// PosID:      p.PosID,
 		Role:       p.Role,
 		Permission: p.Permission,
 		Image:      p.Image,
@@ -172,7 +172,7 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.AreaID = updateData.AreaID
 	user.ProvinceID = updateData.ProvinceID
 	user.SupID = updateData.SupID
-	user.PosID = updateData.PosID
+	// user.PosID = updateData.PosID
 	user.Role = updateData.Role
 	user.Permission = updateData.Permission
 	user.Image = updateData.Image
