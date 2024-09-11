@@ -109,7 +109,7 @@ func Login(c *fiber.Ctx) error {
 
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "vous êtes autorisé à se connecter 😰",
+			"message": "vous n'êtes pas autorisé à se connecter 😰",
 		})
 	}
 
