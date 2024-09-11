@@ -132,5 +132,5 @@ func Setup(app *fiber.App){
 	nd := dash.Group("/numeric-distribution")
 	nd.Get("/table-view/:province/:start_date/:end_date", dashboard.NdTableView)
 	nd.Get("/pos-area/:province/:area/:start_date/:end_date", dashboard.PosByArea)
-
+ 
 }
