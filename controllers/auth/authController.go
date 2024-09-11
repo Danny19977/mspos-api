@@ -105,6 +105,14 @@ func Login(c *fiber.Ctx) error {
 		})
 	}
 
+	if !u.Status {
+
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "vous êtes autorisé à se connecter 😰",
+		})
+	}
+
 	token, err := utils.GenerateJwt(strconv.Itoa(int(u.ID)))
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
