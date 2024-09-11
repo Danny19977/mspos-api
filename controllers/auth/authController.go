@@ -106,7 +106,6 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	if !u.Status {
-
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"message": "vous n'êtes pas autorisé à se connecter 😰",
@@ -122,7 +121,9 @@ func Login(c *fiber.Ctx) error {
 		Name:     "token",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
-		HTTPOnly: true,
+		HTTPOnly: true, 
+		Secure:true, 
+		SameSite: "none",
 	}
 
 	c.Cookie(&cookie)
