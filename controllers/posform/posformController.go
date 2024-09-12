@@ -61,7 +61,7 @@ func UpdatePosform(c *fiber.Ctx) error {
 
 	type UpdateData struct {
 		// IdUnique    string  `json:"id_unique"`
-		Equateur int64  `json:"equateur"`
+		Eq int64  `json:"eq"`
 		Sold     int64  `json:"sold"`
 		Dhl      int64  `json:"dhl"`
 		Ar       int64  `json:"ar"`
@@ -102,7 +102,7 @@ func UpdatePosform(c *fiber.Ctx) error {
 
 	db.First(&posform, id)
 	// posform.IdUnique = updateData.IdUnique
-	posform.Equateur = updateData.Equateur
+	posform.Eq = updateData.Eq
 	posform.Sold = updateData.Sold
 	posform.Dhl = updateData.Dhl
 	posform.Ar = updateData.Ar

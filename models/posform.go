@@ -6,21 +6,35 @@ type PosForm struct {
 	gorm.Model
 
 	IdUnique string `json:"id_unique"`
-	Equateur int64  `json:"equateur"`
+	Eq int64  `json:"eq"`
+	Eq1      int64  `gorm:"default: 0" json:"eq1"`
 	Sold     int64  `json:"sold"`
 	Dhl      int64  `json:"dhl"`
+	Dhl1     int64  `gorm:"default: 0" json:"dhl1"`
 	Ar       int64  `json:"ar"`
+	Ar1      int64  `gorm:"default: 0" json:"ar1"`
 	Sbl      int64  `json:"sbl"`
+	Sbl1     int64  `gorm:"default: 0" json:"sbl1"`
 	Pmf      int64  `json:"pmf"`
+	Pmf1     int64  `gorm:"default: 0" json:"pmf1"`
 	Pmm      int64  `json:"pmm"`
+	Pmm1     int64  `gorm:"default: 0" json:"pmm1"`
 	Ticket   int64  `json:"ticket"`
+	Ticket1  int64  `gorm:"default: 0" json:"ticket1"`
 	Mtc      int64  `json:"mtc"`
+	Mtc1     int64  `gorm:"default: 0" json:"mtc1"`
 	Ws       int64  `json:"ws"`
+	Ws1      int64  `gorm:"default: 0" json:"ws1"`
 	Mast     int64  `json:"mast"`
+	Mast1    int64  `gorm:"default: 0" json:"mast1"`
 	Oris     int64  `json:"oris"`
-	Elite    int64  `json:"elite"` 
+	Oris1    int64  `gorm:"default: 0" json:"oris1"`
+	Elite    int64  `json:"elite"`
+	Elite1   int64  `gorm:"default: 0" json:"elite1"`
 	Yes      int64  `json:"yes"`
+	Yes1     int64  `gorm:"default: 0" json:"yes1"`
 	Time     int64  `json:"time"`
+	Time1    int64  `gorm:"default: 0" json:"time1"`
 	Comment  string `json:"comment"`
 
 	ProvinceID uint `gorm:"foreignKey:province_id" json:"province_id"`

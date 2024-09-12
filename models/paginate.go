@@ -15,11 +15,10 @@ func Paginate(db *gorm.DB, md CountPaginate, p int, l int) fiber.Map {
 	data := md.Paginate(db, l , o)
 	total := md.Count(db)
 	return fiber.Map{"meta": fiber.Map{
-		"total": total , 
+		"total": total, 
 		"page":  p,
 		"last_page": math.Ceil(float64(total) / float64(1)),
-
-	}, 
+	},
 	"data": data,
-	}	
+	}
 }
