@@ -11,15 +11,14 @@ type PosForm struct {
 	Dhl      int64  `json:"dhl"`
 	Ar       int64  `json:"ar"`
 	Sbl      int64  `json:"sbl"`
-	Pmt      int64  `json:"pmt"`
+	Pmf      int64  `json:"pmf"`
 	Pmm      int64  `json:"pmm"`
 	Ticket   int64  `json:"ticket"`
 	Mtc      int64  `json:"mtc"`
 	Ws       int64  `json:"ws"`
 	Mast     int64  `json:"mast"`
 	Oris     int64  `json:"oris"`
-	Elite    int64  `json:"elite"`
-	Ck       int64  `json:"ck"`
+	Elite    int64  `json:"elite"` 
 	Yes      int64  `json:"yes"`
 	Time     int64  `json:"time"`
 	Comment  string `json:"comment"`

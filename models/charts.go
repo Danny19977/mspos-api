@@ -7,7 +7,7 @@ type NDChartData struct {
 	Dhl    float32
 	Ar     float32
 	Sbl    float32
-	Pmt    float32
+	Pmf    float32
 	Pmm    float32
 	Ticket float32
 	Mtc    float32
@@ -25,7 +25,7 @@ type NDChartDataBar struct {
 	Dhl    float32
 	Ar     float32
 	Sbl    float32
-	Pmt    float32
+	Pmf    float32
 	Pmm    float32
 	Ticket float32
 	Mtc    float32

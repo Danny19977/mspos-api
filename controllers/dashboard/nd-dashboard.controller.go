@@ -19,7 +19,7 @@ func NdTableView(c *fiber.Ctx) error {
 		CAST((SELECT COUNT(dhl) FROM pos_forms WHERE dhl::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as dhl,
 		CAST((SELECT COUNT(ar) FROM pos_forms WHERE ar::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float  as decimal(40,1))* 100 as ar,
 		CAST((SELECT COUNT(sbl) FROM pos_forms WHERE sbl::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(20,1)) * 100 as sbl,
-		CAST((SELECT COUNT(pmt) FROM pos_forms WHERE pmt::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as pmt,
+		CAST((SELECT COUNT(pmf) FROM pos_forms WHERE pmf::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as pmf,
 		CAST((SELECT COUNT(pmm) FROM pos_forms WHERE pmm::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as pmm,
 		CAST((SELECT COUNT(ticket) FROM pos_forms WHERE ticket::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as ticket,
 		CAST((SELECT COUNT(mtc) FROM pos_forms WHERE mtc::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as mtc,
@@ -27,7 +27,6 @@ func NdTableView(c *fiber.Ctx) error {
 		CAST((SELECT COUNT(mast) FROM pos_forms WHERE mast::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as mast,
 		CAST((SELECT COUNT(oris) FROM pos_forms WHERE oris::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as oris,
 		CAST((SELECT COUNT(elite) FROM pos_forms WHERE elite::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as elite,
-		CAST((SELECT COUNT(ck) FROM pos_forms WHERE ck::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as ck,
 		CAST((SELECT COUNT(yes) FROM pos_forms WHERE yes::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as yes,
 		CAST((SELECT COUNT(time) FROM pos_forms WHERE time::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float as decimal(40,1)) * 100 as time
 	FROM pos_forms
@@ -60,7 +59,7 @@ func PosByArea(c *fiber.Ctx) error {
 		(SELECT COUNT(dhl) FROM pos_forms WHERE dhl::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as dhl,
 		(SELECT COUNT(ar) FROM pos_forms WHERE ar::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as ar,
 		(SELECT COUNT(sbl) FROM pos_forms WHERE sbl::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as sbl,
-		(SELECT COUNT(pmt) FROM pos_forms WHERE pmt::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as pmt,
+		(SELECT COUNT(pmf) FROM pos_forms WHERE pmf::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as pmf,
 		(SELECT COUNT(pmm) FROM pos_forms WHERE pmm::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as pmm,
 		(SELECT COUNT(ticket) FROM pos_forms WHERE ticket::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as ticket,
 		(SELECT COUNT(mtc) FROM pos_forms WHERE mtc::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as mtc,
@@ -68,7 +67,6 @@ func PosByArea(c *fiber.Ctx) error {
 		(SELECT COUNT(mast) FROM pos_forms WHERE mast::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as mast,
 		(SELECT COUNT(oris) FROM pos_forms WHERE oris::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as oris,
 		(SELECT COUNT(elite) FROM pos_forms WHERE elite::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as elite,
-		(SELECT COUNT(ck) FROM pos_forms WHERE ck::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as ck,
 		(SELECT COUNT(yes) FROM pos_forms WHERE yes::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as yes,
 		(SELECT COUNT(time) FROM pos_forms WHERE time::float > 0)::float / (SELECT COUNT(pos_forms.id) FROM pos_forms)::float * 100 as time
 	FROM pos_forms

@@ -66,7 +66,7 @@ func UpdatePosform(c *fiber.Ctx) error {
 		Dhl      int64  `json:"dhl"`
 		Ar       int64  `json:"ar"`
 		Sbl      int64  `json:"sbl"`
-		Pmt      int64  `json:"pmt"`
+		Pmf      int64  `json:"pmf"`
 		Pmm      int64  `json:"pmm"`
 		Ticket   int64  `json:"ticket"`
 		Mtc      int64  `json:"mtc"`
@@ -107,15 +107,14 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform.Dhl = updateData.Dhl
 	posform.Ar = updateData.Ar
 	posform.Sbl = updateData.Sbl
-	posform.Pmt = updateData.Pmt
+	posform.Pmf = updateData.Pmf
 	posform.Pmm = updateData.Pmm
 	posform.Ticket = updateData.Ticket
 	posform.Mtc = updateData.Mtc
 	posform.Ws = updateData.Ws
 	posform.Mast = updateData.Mast
 	posform.Oris = updateData.Oris
-	posform.Elite = updateData.Elite
-	posform.Ck = updateData.Ck
+	posform.Elite = updateData.Elite 
 	posform.Yes = updateData.Yes
 	posform.Time = updateData.Time
 	posform.Comment = updateData.Comment
