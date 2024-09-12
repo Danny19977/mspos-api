@@ -60,29 +60,36 @@ func UpdatePosform(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		// IdUnique    string  `json:"id_unique"`
-		Eq int64  `json:"eq"`
-		Sold     int64  `json:"sold"`
-		Dhl      int64  `json:"dhl"`
-		Ar       int64  `json:"ar"`
-		Sbl      int64  `json:"sbl"`
-		Pmf      int64  `json:"pmf"`
-		Pmm      int64  `json:"pmm"`
-		Ticket   int64  `json:"ticket"`
-		Mtc      int64  `json:"mtc"`
-		Ws       int64  `json:"ws"`
-		Mast     int64  `json:"mast"`
-		Oris     int64  `json:"oris"`
-		Elite    int64  `json:"elite"`
-		Ck       int64  `json:"ck"`
-		Yes      int64  `json:"yes"`
-		Time     int64  `json:"time"`
-		Comment  string `json:"comment"`
-		// ProvinceID uint   `json:"province_id"`
-		// AreaID     uint   `json:"area_id"`
-		// SupID      uint   `json:"sup_id"`
-		// PosID      uint   `json:"pos_id"`
-		// UserID     uint   `json:"user_id"`
+		Eq        int64  `json:"eq"`
+		Eq1       int64  `json:"eq1"`
+		Sold      int64  `json:"sold"`
+		Dhl       int64  `json:"dhl"`
+		Dhl1      int64  `json:"dhl1"`
+		Ar        int64  `json:"ar"`
+		Ar1       int64  `json:"ar1"`
+		Sbl       int64  `json:"sbl"`
+		Sbl1      int64  `json:"sbl1"`
+		Pmf       int64  `json:"pmf"`
+		Pmf1      int64  `json:"pmf1"`
+		Pmm       int64  `json:"pmm"`
+		Pmm1      int64  `json:"pmm1"`
+		Ticket    int64  `json:"ticket"`
+		Ticket1   int64  `json:"ticket1"`
+		Mtc       int64  `json:"mtc"`
+		Mtc1      int64  `json:"mtc1"`
+		Ws        int64  `json:"ws"`
+		Ws1       int64  `json:"ws1"`
+		Mast      int64  `json:"mast"`
+		Mast1     int64  `json:"mast1"`
+		Oris      int64  `json:"oris"`
+		Oris1     int64  `json:"oris1"`
+		Elite     int64  `json:"elite"`
+		Elite1    int64  `json:"elite1"`
+		Yes       int64  `json:"yes"`
+		Yes1      int64  `json:"yes1"`
+		Time      int64  `json:"time"`
+		Time1     int64  `json:"time1"`
+		Comment   string `json:"comment"`
 		Signature string `json:"signature"`
 	}
 
@@ -100,29 +107,37 @@ func UpdatePosform(c *fiber.Ctx) error {
 
 	posform := new(models.PosForm)
 
-	db.First(&posform, id)
-	// posform.IdUnique = updateData.IdUnique
+	db.First(&posform, id) 
 	posform.Eq = updateData.Eq
+	posform.Eq1 = updateData.Eq1
 	posform.Sold = updateData.Sold
 	posform.Dhl = updateData.Dhl
+	posform.Dhl1 = updateData.Dhl1
 	posform.Ar = updateData.Ar
+	posform.Ar1 = updateData.Ar1
 	posform.Sbl = updateData.Sbl
+	posform.Sbl1 = updateData.Sbl1
 	posform.Pmf = updateData.Pmf
+	posform.Pmf1 = updateData.Pmf1
 	posform.Pmm = updateData.Pmm
+	posform.Pmm1 = updateData.Pmm1
 	posform.Ticket = updateData.Ticket
+	posform.Ticket1 = updateData.Ticket1
 	posform.Mtc = updateData.Mtc
+	posform.Mtc1 = updateData.Mtc1
 	posform.Ws = updateData.Ws
+	posform.Ws1 = updateData.Ws1
 	posform.Mast = updateData.Mast
+	posform.Mast1 = updateData.Mast1
 	posform.Oris = updateData.Oris
-	posform.Elite = updateData.Elite 
+	posform.Oris1 = updateData.Oris1
+	posform.Elite = updateData.Elite
+	posform.Elite1 = updateData.Elite1
 	posform.Yes = updateData.Yes
+	posform.Yes1 = updateData.Yes1
 	posform.Time = updateData.Time
-	posform.Comment = updateData.Comment
-	// posform.ProvinceID = updateData.ProvinceID
-	// posform.AreaID = updateData.AreaID
-	// posform.SupID = updateData.SupID
-	// posform.PosID = updateData.PosID
-	// posform.UserID = updateData.UserID
+	posform.Time1 = updateData.Time1
+	posform.Comment = updateData.Comment 
 	posform.Signature = updateData.Signature
 
 	db.Save(&posform)
