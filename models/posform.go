@@ -6,7 +6,7 @@ type PosForm struct {
 	gorm.Model
 
 	IdUnique string `json:"id_unique"`
-	Eq int64  `json:"eq"`
+	Eq       int64  `json:"eq"`
 	Eq1      int64  `gorm:"default: 0" json:"eq1"`
 	Sold     int64  `json:"sold"`
 	Dhl      int64  `json:"dhl"`

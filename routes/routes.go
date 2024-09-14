@@ -27,6 +27,7 @@ func Setup(app *fiber.App){
 	auth := api.Group("/auth")
 	auth.Post("/register", authentification.Register)
 	auth.Post("/login", authentification.Login)
+	auth.Post("/logout", authentification.Logout)
 	auth.Get("/user", authentification.AuthUser)
 	auth.Post("/forgot-password", authentification.Forgot)
 
@@ -131,6 +132,6 @@ func Setup(app *fiber.App){
 	dash := api.Group("/dashboard")
 	nd := dash.Group("/numeric-distribution")
 	nd.Get("/table-view/:province/:start_date/:end_date", dashboard.NdTableView)
-	nd.Get("/pos-area/:province/:area/:start_date/:end_date", dashboard.PosByArea)
+	nd.Get("/nd-year/:province", dashboard.NdByYear)
  
 }

@@ -2,38 +2,48 @@ package models
 
 type NDChartData struct {
     Area   string
-	Eq     float32
+	Eq     float64
 	// Sold   []int
-	Dhl    float32
-	Ar     float32
-	Sbl    float32
-	Pmf    float32
-	Pmm    float32
-	Ticket float32
-	Mtc    float32
-	Ws     float32
-	Mast   float32
-	Oris   float32
-	Elite  float32
-	Ck     float32
-	Yes    float32
-	Time   float32
+	Dhl    float64
+	Ar     float64
+	Sbl    float64
+	Pmf    float64
+	Pmm    float64
+	Ticket float64
+	Mtc    float64
+	Ws     float64
+	Mast   float64
+	Oris   float64
+	Elite  float64
+	Ck     float64
+	Yes    float64
+	Time   float64
+}
+
+type NDAverage struct {
+	Brand string
+	Pourcent float64
+}
+
+type NdByYear struct {
+	Mois string
+	Eq float64
 }
 
 type NDChartDataBar struct {
-	Eq     float32 
-	Dhl    float32
-	Ar     float32
-	Sbl    float32
-	Pmf    float32
-	Pmm    float32
-	Ticket float32
-	Mtc    float32
-	Ws     float32
-	Mast   float32
-	Oris   float32
-	Elite  float32
-	Ck     float32
-	Yes    float32
-	Time   float32
+	Eq     float64 
+	Dhl    float64
+	Ar     float64
+	Sbl    float64
+	Pmf    float64
+	Pmm    float64
+	Ticket float64
+	Mtc    float64
+	Ws     float64
+	Mast   float64
+	Oris   float64
+	Elite  float64
+	Ck     float64
+	Yes    float64
+	Time   float64
 }
