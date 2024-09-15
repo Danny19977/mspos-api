@@ -48,16 +48,16 @@ func NdByYear(c *fiber.Ctx) error {
 	province := c.Params("province")
 
 	sql1 := `  
-	SELECT EXTRACT(MONTH FROM "pos_forms"."created_at") AS mois,
+	SELECT EXTRACT(MONTH FROM "pos_forms"."created_at") AS month,
 		CAST(SUM(eq1) / COUNT(*) as decimal(40,0)) * 100 AS eq
-		FROM pos_forms
-		INNER JOIN provinces ON pos_forms.province_id=provinces.id
-				WHERE "provinces"."name"=? AND EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
+	FROM pos_forms
+	INNER JOIN provinces ON pos_forms.province_id=provinces.id
+		WHERE "provinces"."name"=? AND EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
 		AND EXTRACT(MONTH FROM "pos_forms"."created_at") BETWEEN 1 AND 12 
-	GROUP BY mois
-	ORDER BY mois;
+		GROUP BY EXTRACT(MONTH FROM "pos_forms"."created_at")
+		ORDER BY EXTRACT(MONTH FROM "pos_forms"."created_at");
 	`
-	var chartData models.NdByYear
+	var chartData  []models.NdByYear
 	database.DB.Raw(sql1, province).Scan(&chartData)
 
 	return c.JSON(fiber.Map{

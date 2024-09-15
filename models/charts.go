@@ -26,8 +26,8 @@ type NDAverage struct {
 }
 
 type NdByYear struct {
-	Mois string
-	Eq float64
+	Month string 
+	Eq float64  
 }
 
 type NDChartDataBar struct {
