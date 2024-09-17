@@ -3,11 +3,11 @@ package models
 import "gorm.io/gorm"
 
 type Area struct {
-	gorm.Model 
-	
+	gorm.Model
+
 	Name       string `gorm:"not null" json:"name"`
 	ProvinceID uint   `gorm:"foreignKey:province_id" json:"province_id"`
-	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"`
+	SupID      uint   `gorm:"foreignKey:sup_id" json:"sup_id"`
 	Signature  string `json:"signature"`
 }
 

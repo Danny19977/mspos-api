@@ -130,8 +130,17 @@ func Setup(app *fiber.App){
 
 
 	dash := api.Group("/dashboard")
+
 	nd := dash.Group("/numeric-distribution")
 	nd.Get("/table-view/:province/:start_date/:end_date", dashboard.NdTableView)
 	nd.Get("/nd-year/:province", dashboard.NdByYear)
+
+	sum := dash.Group("/sammury")
+	sum.Get("/dr-count", dashboard.DrCount)
+	sum.Get("/pos-count", dashboard.POSCount)
+	sum.Get("/province-count", dashboard.ProvinceCount)
+	sum.Get("/area-count", dashboard.AreaCount)
+	sum.Get("/sos-pie/:start_date/:end_date", dashboard.SOSPie)
+
  
 }

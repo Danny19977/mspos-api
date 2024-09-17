@@ -47,3 +47,12 @@ type NDChartDataBar struct {
 	Yes    float64
 	Time   float64
 }
+
+type SummaryCount struct {
+	Count int64
+}
+
+type SosPieChart struct {
+	Province string
+	Eq int64
+}
