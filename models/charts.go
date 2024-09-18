@@ -56,3 +56,22 @@ type SosPieChart struct {
 	Province string
 	Eq int64
 }
+
+
+type TrackingVisitDRSChart struct {
+	Province string
+	Nd int64
+	Sos int64
+	Oos int64
+	Dr int64
+	Visit int64
+	Obj int64
+	Perf int64
+}
+
+type SumChartBar struct {
+	Province string
+	Nd int64
+	Sos int64
+	Oos int64 
+}

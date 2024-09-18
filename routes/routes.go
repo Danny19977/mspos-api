@@ -141,6 +141,7 @@ func Setup(app *fiber.App){
 	sum.Get("/province-count", dashboard.ProvinceCount)
 	sum.Get("/area-count", dashboard.AreaCount)
 	sum.Get("/sos-pie/:start_date/:end_date", dashboard.SOSPie)
-
+	sum.Get("/tracking-visit-dr/:days/:start_date/:end_date", dashboard.TrackingVisitDRS)
+	sum.Get("/summary-chart-bar/:start_date/:end_date", dashboard.SummaryChartBar)
  
 }
