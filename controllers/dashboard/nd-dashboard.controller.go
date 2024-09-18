@@ -46,14 +46,15 @@ func NdTableView(c *fiber.Ctx) error {
 
 func NdByYear(c *fiber.Ctx) error {
 	province := c.Params("province")
-
 	sql1 := `  
 	SELECT EXTRACT(MONTH FROM "pos_forms"."created_at") AS month,
 		ROUND(SUM(eq1) / COUNT(*) * 100) AS eq
 	FROM pos_forms
 	INNER JOIN provinces ON pos_forms.province_id=provinces.id
-		WHERE "provinces"."name"=? AND EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
+	WHERE "provinces"."name"=? AND 
+    EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
 		AND EXTRACT(MONTH FROM "pos_forms"."created_at") BETWEEN 1 AND 12 
+    
 		GROUP BY EXTRACT(MONTH FROM "pos_forms"."created_at")
 		ORDER BY EXTRACT(MONTH FROM "pos_forms"."created_at");
 	`
