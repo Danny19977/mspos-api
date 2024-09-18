@@ -49,7 +49,7 @@ func NdByYear(c *fiber.Ctx) error {
 
 	sql1 := `  
 	SELECT EXTRACT(MONTH FROM "pos_forms"."created_at") AS month,
-		CAST(SUM(eq1) / COUNT(*) as decimal(40,0) * 100) AS eq
+		ROUND(SUM(eq1) / COUNT(*) * 100) AS eq
 	FROM pos_forms
 	INNER JOIN provinces ON pos_forms.province_id=provinces.id
 		WHERE "provinces"."name"=? AND EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
