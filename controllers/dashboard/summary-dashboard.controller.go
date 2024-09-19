@@ -180,3 +180,83 @@ func SummaryChartBar(c *fiber.Ctx) error {
 		"data":    chartData,
 	})
 }
+
+
+func BetterDR(c *fiber.Ctx) error { 
+	start_date := c.Params("start_date")
+	end_date := c.Params("end_date")
+
+	sql1 := `
+	SELECT fullname, 
+		"provinces"."name" AS province, 
+		"areas"."name" AS area,
+	SUM(sold) AS ventes
+	FROM pos_forms
+	INNER JOIN users ON pos_forms.user_id=users.id
+	INNER JOIN provinces ON pos_forms.province_id=provinces.id
+	INNER JOIN areas ON pos_forms.province_id=areas.id
+	WHERE "users"."role"='DR' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+			AND ? ::TIMESTAMP
+	GROUP BY fullname, "provinces"."name", "areas"."name"
+	ORDER BY ventes DESC
+	LIMIT 10; 
+	`
+	var chartData []models.SummaryBetterDR
+	database.DB.Raw(sql1, start_date, end_date).Scan(&chartData)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "chartData data",
+		"data":    chartData,
+	})
+}
+
+func BetterSup(c *fiber.Ctx) error { 
+	start_date := c.Params("start_date")
+	end_date := c.Params("end_date")
+
+	sql1 := `
+		SELECT fullname, 
+			"provinces"."name" AS province, 
+			"areas"."name" AS area,
+		SUM(sold) AS ventes
+		FROM pos_forms
+		INNER JOIN users ON pos_forms.user_id=users.id
+		INNER JOIN provinces ON pos_forms.province_id=provinces.id
+		INNER JOIN areas ON pos_forms.province_id=areas.id
+		WHERE "users"."role"='Supervisor' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+				AND ? ::TIMESTAMP
+		GROUP BY fullname, "provinces"."name", "areas"."name"
+		ORDER BY ventes DESC
+		LIMIT 5;
+	`
+	var chartData []models.SummaryBetterDR
+	database.DB.Raw(sql1, start_date, end_date).Scan(&chartData)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "chartData data",
+		"data":    chartData,
+	})
+}
+
+func StatusEquipement(c *fiber.Ctx) error {
+	start_date := c.Params("start_date")
+	end_date := c.Params("end_date")
+
+	sql1 := `
+		SELECT input_group_selector AS equipement,  
+		COUNT(input_group_selector) AS count
+		FROM pos_forms
+		INNER JOIN pos ON pos_forms.pos_id=pos.id 
+		WHERE "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+				AND ? ::TIMESTAMP
+		GROUP BY input_group_selector;
+	`
+
+	var chartData []models.StatusEquip
+	database.DB.Raw(sql1, start_date, end_date).Scan(&chartData)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "chartData data",
+		"data":    chartData,
+	})
+}

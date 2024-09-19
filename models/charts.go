@@ -80,3 +80,15 @@ type SosPieChartArea struct {
 	Area string
 	Eq int64
 }
+
+type SummaryBetterDR struct {
+	Fullname string
+	Province string
+	Area string
+	Ventes int64
+}
+
+type StatusEquip struct {
+	Equipement string
+	Count int64
+}
