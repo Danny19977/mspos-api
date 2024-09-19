@@ -75,3 +75,8 @@ type SumChartBar struct {
 	Sos int64
 	Oos int64 
 }
+
+type SosPieChartArea struct {
+	Area string
+	Eq int64
+}
