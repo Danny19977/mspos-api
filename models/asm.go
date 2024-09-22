@@ -11,6 +11,13 @@ type Asm struct {
 	Sups       []Sup
 }
 
+type AsmPaginate struct {
+	Id        uint   `json:"id"`
+	Name      string `json:"name"`
+	Province  string `json:"province"`
+	Signature string `json:"signature"`
+}
+
 func (p *Asm) Count(db *gorm.DB) int64 {
 	var total int64
 	db.Model(&Asm{}).Count(&total)

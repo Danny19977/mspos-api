@@ -1,6 +1,7 @@
 package userr
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 
@@ -10,15 +11,90 @@ import (
 	"github.com/kgermando/mspos-api/utils"
 )
 
-// Get All data
-func GetUsers(c *fiber.Ctx) error {
+// Paginate
+func GetPaginatedUsers(c *fiber.Ctx) error {
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
 
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
 
-	return c.JSON(models.Paginate(database.DB, &models.User{}, p, l))
+	var u []models.User 
+	var length int64
+	db := database.DB
+	db.Find(&u).Count(&length) 
+	fmt.Println("length", length)
+
+	sql1 := `
+		SELECT "users"."id" AS id, fullname, title, email, phone, "provinces"."name" AS province, 
+		"areas"."name" AS area, "sups"."name" AS sup, status 
+		FROM users 
+			INNER JOIN provinces ON users.province_id=provinces.id
+			INNER JOIN areas ON users.area_id=areas.id
+			INNER JOIN sups ON users.sup_id=sups.id
+		ORDER BY "users"."updated_at" DESC;
+	`
+	var users []models.UserPaginate
+	database.DB.Raw(sql1).Scan(&users)
+
+	if offset >= len(users) {
+		users = []models.UserPaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(users) {
+			end = len(users)
+		}
+		users = users[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(users) / pageSize
+	if remainder := len(users) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All users",
+		"data":       users,
+		"pagination": pagination,
+	})
 }
 
+// query all data
+func GetAllUsers(c *fiber.Ctx) error {
+	db := database.DB
+	var users []models.User
+	db.Find(&users)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All users",
+		"data":    users,
+	})
+}
+
+// Get All data
+// func GetUsers(c *fiber.Ctx) error {
+
+// 	p, _ := strconv.Atoi(c.Query("page", "1"))
+// 	l, _ := strconv.Atoi(c.Query("limit", "15"))
+
+// 	return c.JSON(models.Paginate(database.DB, &models.User{}, p, l))
+// }
 
 // query data
 func GetUserByID(c *fiber.Ctx) error {
@@ -26,14 +102,13 @@ func GetUserByID(c *fiber.Ctx) error {
 	db := database.DB
 	var users []models.User
 	db.Where("province_id = ?", id).Find(&users)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "users by id found", 
-		"data": users,
+		"status":  "success",
+		"message": "users by id found",
+		"data":    users,
 	})
 }
-
 
 // Get one data
 func GetUser(c *fiber.Ctx) error {
@@ -97,7 +172,7 @@ func CreateUser(c *fiber.Ctx) error {
 		Permission: p.Permission,
 		Image:      p.Image,
 		Status:     p.Status,
-		IsManager: p.IsManager,
+		IsManager:  p.IsManager,
 		Signature:  p.Signature,
 	}
 

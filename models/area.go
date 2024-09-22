@@ -11,6 +11,15 @@ type Area struct {
 	Signature  string `json:"signature"`
 }
 
+type AreaPaginate struct { 
+	Id       uint `json:"id"`
+	Name       string `json:"name"`
+	Province string   `json:"province"`
+	Sup      string   `json:"sup"`
+	Signature  string `json:"signature"`
+}
+
+
 func (p *Area) Count(db *gorm.DB) int64 {
 	var total int64
 	db.Model(&Area{}).Count(&total)

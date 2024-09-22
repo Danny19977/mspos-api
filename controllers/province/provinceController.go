@@ -8,13 +8,75 @@ import (
 	"github.com/kgermando/mspos-api/models"
 )
 
+// Paginate
+func GetPaginatedProvince(c *fiber.Ctx) error {
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
+
+	var u []models.Province 
+	var length int64
+	db := database.DB
+	db.Find(&u).Count(&length)  
+
+	sql1 := `
+		SELECT "provinces"."id" AS id, "provinces"."name" AS name 
+		FROM provinces  
+		ORDER BY "provinces"."updated_at" DESC;
+	`
+	var dataList []models.ProvincePaginate
+	database.DB.Raw(sql1).Scan(&dataList)
+
+	if offset >= len(dataList) {
+		dataList = []models.ProvincePaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(dataList) {
+			end = len(dataList)
+		}
+		dataList = dataList[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All provinces",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
 // Get All data
-func GetProvinces(c *fiber.Ctx) error {
-
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.Province{}, p, l))
+func GetAllProvinces(c *fiber.Ctx) error {
+	db := database.DB
+	var data []models.Province
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All provinces",
+		"data":    data,
+	})
 }
 
 // query data

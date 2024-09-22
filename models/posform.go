@@ -46,6 +46,36 @@ type PosForm struct {
 	Signature string `json:"signature"`
 }
 
+type PosFormPaginate struct {
+	Id  uint `json:"id"`
+	IdUnique string `json:"id_unique"`
+	Eq       int64  `json:"eq"`
+	Sold     int64  `json:"sold"`
+	Dhl      int64  `json:"dhl"`
+	Ar       int64  `json:"ar"`
+	Sbl      int64  `json:"sbl"`
+	Pmf      int64  `json:"pmf"`
+	Pmm      int64  `json:"pmm"`
+	Ticket   int64  `json:"ticket"`
+	Mtc      int64  `json:"mtc"`
+	Ws       int64  `json:"ws"`
+	Mast     int64  `json:"mast"`
+	Oris     int64  `json:"oris"`
+	Elite    int64  `json:"elite"`
+	Yes      int64  `json:"yes"`
+	Time     int64  `json:"time"`
+	Comment  string `json:"comment"`
+
+	Province string `json:"province"`
+	User     string `json:"user"`
+	Area     string `json:"area"`
+	Sup      string `json:"sup"`
+	Pos      string `json:"pos"`
+
+	Signature string `json:"signature"`
+}
+
+
 func (p *PosForm) Count(db *gorm.DB) int64 {
 	var total int64
 	db.Model(&PosForm{}).Count(&total)
