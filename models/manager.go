@@ -10,6 +10,12 @@ type Manager struct {
 	Signature    string `json:"signature"`
 }
 
+type ManagerPaginate struct { 
+	Id  uint `json:"id"`
+	Name  string `json:"name"`
+	Signature    string `json:"signature"`
+}
+
 func (p *Manager) Count(db *gorm.DB) int64 {
 	var total int64
 	db.Model(&Manager{}).Count(&total)

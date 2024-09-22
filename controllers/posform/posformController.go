@@ -8,13 +8,103 @@ import (
 	"github.com/kgermando/mspos-api/models"
 )
 
+// Paginate
+func GetPaginatedPosForm(c *fiber.Ctx) error {
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
+
+	var u []models.PosForm
+	var length int64
+	db := database.DB
+	db.Find(&u).Count(&length)
+
+	sql1 := `
+		SELECT "pos_forms"."id" AS id, 
+		id_unique AS id_unique, 
+		eq AS eq, 
+		sold AS sold, 
+		dhl AS dhl, 
+		ar AS ar, 
+		sbl AS sbl, 
+		pmf AS pmf, 
+		pmm AS pmm, 
+		ticket AS ticket, 
+		mtc AS mtc, 
+		ws AS ws, 
+		mast AS mast, 
+		oris AS oris, 
+		elite AS elite, 
+		yes AS yes, 
+		time AS time, 
+		comment AS comment,  
+		"provinces"."name" AS province, 
+		"sups"."name" AS name, 
+		"users"."fullname" AS fullname, 
+		"areas"."name" AS area,
+		"pos"."shop" AS pos
+		FROM pos_forms 
+			INNER JOIN provinces ON pos_forms.province_id=provinces.id 
+			INNER JOIN sups ON pos_forms.sup_id=sups.id 
+			INNER JOIN users ON pos_forms.user_id=users.id 
+			INNER JOIN areas ON pos_forms.area_id=areas.id 
+			INNER JOIN pos ON pos_forms.pos_id=pos.id 
+ 
+		ORDER BY "pos_forms"."updated_at" DESC;
+	`
+	var dataList []models.PosFormPaginate
+	database.DB.Raw(sql1).Scan(&dataList)
+
+	if offset >= len(dataList) {
+		dataList = []models.PosFormPaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(dataList) {
+			end = len(dataList)
+		}
+		dataList = dataList[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All PosForms",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
 // Get All data
-func GetPosforms(c *fiber.Ctx) error {
-
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.PosForm{}, p, l))
+func GetAllPosforms(c *fiber.Ctx) error {
+	db := database.DB
+	var data []models.PosForm
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All PosForms",
+		"data":    data,
+	})
 }
 
 // Get one data
@@ -107,7 +197,7 @@ func UpdatePosform(c *fiber.Ctx) error {
 
 	posform := new(models.PosForm)
 
-	db.First(&posform, id) 
+	db.First(&posform, id)
 	posform.Eq = updateData.Eq
 	posform.Eq1 = updateData.Eq1
 	posform.Sold = updateData.Sold
@@ -137,7 +227,7 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform.Yes1 = updateData.Yes1
 	posform.Time = updateData.Time
 	posform.Time1 = updateData.Time1
-	posform.Comment = updateData.Comment 
+	posform.Comment = updateData.Comment
 	posform.Signature = updateData.Signature
 
 	db.Save(&posform)

@@ -8,13 +8,97 @@ import (
 	"github.com/kgermando/mspos-api/models"
 )
 
+// Paginate
+func GetPaginatedPos(c *fiber.Ctx) error {
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
+
+	var u []models.Pos
+	var length int64
+	db := database.DB
+	db.Find(&u).Count(&length)
+
+	sql1 := `
+		SELECT "pos"."id" AS id, 
+		status AS status, 
+		"pos"."name" AS name, 
+		"pos"."shop" AS shop,
+		"pos"."manager" AS manager,  
+		"pos"."telephone" AS telephone,
+		"provinces"."name" AS province,   
+		"areas"."name" AS area,
+		"pos"."commune" AS commune,  
+		"pos"."quartier" AS quartier,  
+		"pos"."avenue" AS avenue,  
+		"pos"."reference" AS reference,
+		
+		"pos"."eparasol" AS eparasol,
+		"pos"."etable" AS etable,
+		"pos"."ekiosk" AS ekiosk,
+		"pos"."input_group_selector" AS input_group_selector,
+		"pos"."cparasol" AS cparasol,
+		"pos"."ctable" AS ctable,
+		"pos"."ckiosk" AS ckiosk 
+		FROM pos 
+			INNER JOIN provinces ON pos.province_id=provinces.id  
+			INNER JOIN areas ON pos.area_id=areas.id  
+ 
+		ORDER BY "pos"."updated_at" DESC;
+	`
+	var dataList []models.PosPaginate
+	database.DB.Raw(sql1).Scan(&dataList)
+
+	if offset >= len(dataList) {
+		dataList = []models.PosPaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(dataList) {
+			end = len(dataList)
+		}
+		dataList = dataList[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All PosForms",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
 // Get All data
-func GetPoss(c *fiber.Ctx) error {
-
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.Pos{}, p, l))
+func GetAllPoss(c *fiber.Ctx) error {
+	db := database.DB
+	var data []models.Pos
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All Pos",
+		"data":    data,
+	})
 }
 
 // query data

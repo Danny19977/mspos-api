@@ -33,16 +33,33 @@ type User struct {
 }
 
 type UserResponse struct {
+	Id       uint   `json:"id,omitempty"`
+	Fullname string `json:"fullname"`
+	Email    string `json:"email"`
+	Phone    string `json:"phone"`
+	Title    string `json:"title"`
+	Role     string `json:"role"`
+	Area     uint   `json:"area_id"`
+	Province uint   `json:"province_id"`
+	Sup      uint   `json:"sup_id"`
+	// Pos        uint      `json:"pos_id"`
+	Permission string    `json:"permission"`
+	Status     bool      `json:"status"`
+	Signature  string    `json:"signature"`
+	CreatedAt  time.Time `json:"created_at"`
+	UpdatedAt  time.Time `json:"updated_at"`
+}
+
+type UserPaginate struct {
 	Id         uint      `json:"id,omitempty"`
 	Fullname   string    `json:"fullname"`
 	Email      string    `json:"email"`
 	Phone      string    `json:"phone"`
 	Title      string    `json:"title"`
 	Role       string    `json:"role"`
-	Area       uint      `json:"area_id"`
-	Province   uint      `json:"province_id"`
-	Sup        uint      `json:"sup_id"`
-	// Pos        uint      `json:"pos_id"`
+	Area       string    `json:"area"`
+	Province   string    `json:"province"`
+	Sup        string    `json:"sup"`
 	Permission string    `json:"permission"`
 	Status     bool      `json:"status"`
 	Signature  string    `json:"signature"`
