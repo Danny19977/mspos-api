@@ -48,8 +48,8 @@ func GetPaginatedPosForm(c *fiber.Ctx) error {
 		time AS time, 
 		comment AS comment,  
 		"provinces"."name" AS province, 
-		"sups"."name" AS name, 
-		"users"."fullname" AS fullname, 
+		"sups"."name" AS sup, 
+		"users"."fullname" AS user, 
 		"areas"."name" AS area,
 		"pos"."shop" AS pos
 		FROM pos_forms 
