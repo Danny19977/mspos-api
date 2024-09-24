@@ -50,6 +50,7 @@ func Setup(app *fiber.App) {
 	prov := api.Group("/provinces")
 	prov.Get("/all", province.GetAllProvinces)
 	prov.Get("/all/paginate", province.GetPaginatedProvince)
+	prov.Get("/all/dropdown", province.GetProvinceDropdown)
 	prov.Get("/all/:id", province.GetProvinceByID)
 	prov.Post("/create", province.CreateProvince)
 	prov.Get("/get/:id", province.GetProvince)

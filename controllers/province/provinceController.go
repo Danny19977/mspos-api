@@ -23,14 +23,14 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 	}
 	offset := (page - 1) * pageSize
 
-	var u []models.Province 
+	var u []models.Province
 	var length int64
 	db := database.DB
-	db.Find(&u).Count(&length)  
+	db.Find(&u).Count(&length)
 
 	sql1 := `
 		SELECT "provinces"."id" AS id, "provinces"."name" AS name 
-		FROM provinces  
+		FROM provinces LEFT 
 		ORDER BY "provinces"."updated_at" DESC;
 	`
 	var dataList []models.ProvincePaginate
@@ -67,6 +67,24 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 	})
 }
 
+// Get All Provinces
+func GetProvinceDropdown(c *fiber.Ctx) error {
+	db := database.DB
+	sql1 := `
+		SELECT "provinces"."id" AS id, "provinces"."name" AS name
+		FROM pos_forms
+		INNER JOIN provinces ON pos_forms.province_id=provinces.id
+		GROUP BY "provinces"."id", "provinces"."name"; 
+	`
+	var data []models.ProvinceDropDown
+	db.Raw(sql1).Scan(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All provinces Dropdown",
+		"data":    data,
+	})
+}
+
 // Get All data
 func GetAllProvinces(c *fiber.Ctx) error {
 	db := database.DB
@@ -85,14 +103,13 @@ func GetProvinceByID(c *fiber.Ctx) error {
 	db := database.DB
 	var provinces []models.Province
 	db.Where("id = ?", id).Find(&provinces)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "provinces by id found", 
-		"data": provinces,
+		"status":  "success",
+		"message": "provinces by id found",
+		"data":    provinces,
 	})
 }
-
 
 // Get one data
 func GetProvince(c *fiber.Ctx) error {
