@@ -73,12 +73,15 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 }
 
 // Get All data
-func GetAllAreas(c *fiber.Ctx) error {
-
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.Area{}, p, l))
+func GetAllAreas(c *fiber.Ctx) error { 
+	db := database.DB
+	var data []models.Area
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All Areas",
+		"data":    data,
+	})
 }
 
 // query data

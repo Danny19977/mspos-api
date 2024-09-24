@@ -1,8 +1,6 @@
 package userlogs
 
-import (
-	"strconv"
-
+import ( 
 	"github.com/gofiber/fiber/v2"
 	"github.com/kgermando/mspos-api/database"
 	"github.com/kgermando/mspos-api/models"
@@ -11,10 +9,14 @@ import (
 // Get All data
 func GetUserLogs(c *fiber.Ctx) error {
 
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.UserLogs{}, p, l))
+	db := database.DB
+	var data []models.UserLogs
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All UserLogs",
+		"data":    data,
+	})
 }
 
 
