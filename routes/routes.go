@@ -61,6 +61,7 @@ func Setup(app *fiber.App) {
 	ar := api.Group("/areas")
 	ar.Get("/all", area.GetAllAreas)
 	ar.Get("/all/paginate", area.GetPaginatedAreas)
+	ar.Get("/all/dropdown", area.GetAreaDropdown)
 	ar.Get("/all/:id", area.GetAreaByID)
 	ar.Get("/all-area/:id", area.GetSupAreaByID)
 	ar.Post("/create", area.CreateArea)

@@ -72,8 +72,27 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 	})
 }
 
+
+// Get All Provinces Dropdown
+func GetAreaDropdown(c *fiber.Ctx) error {
+	db := database.DB
+	sql1 := `
+		SELECT "areas"."id" AS id, "areas"."name" AS name, "areas"."province_id" AS province_id
+		FROM pos_forms
+		INNER JOIN areas ON pos_forms.area_id=areas.id
+		GROUP BY "areas"."id", "areas"."name", "areas"."province_id";
+	`
+	var data []models.AreaDropDown
+	db.Raw(sql1).Scan(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All area Dropdown",
+		"data":    data,
+	})
+}
+
 // Get All data
-func GetAllAreas(c *fiber.Ctx) error { 
+func GetAllAreas(c *fiber.Ctx) error {
 	db := database.DB
 	var data []models.Area
 	db.Find(&data)

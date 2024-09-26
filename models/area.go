@@ -19,6 +19,12 @@ type AreaPaginate struct {
 	Signature  string `json:"signature"`
 }
 
+type AreaDropDown struct { 
+	Id  uint `json:"id"`
+	Name  string  `json:"name"`
+	ProvinceID uint `json:"province_id"`
+}
+
 
 func (p *Area) Count(db *gorm.DB) int64 {
 	var total int64

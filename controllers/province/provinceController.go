@@ -30,7 +30,7 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 
 	sql1 := `
 		SELECT "provinces"."id" AS id, "provinces"."name" AS name 
-		FROM provinces LEFT 
+		FROM provinces  
 		ORDER BY "provinces"."updated_at" DESC;
 	`
 	var dataList []models.ProvincePaginate
@@ -67,7 +67,7 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 	})
 }
 
-// Get All Provinces
+// Get All Provinces Dropdown
 func GetProvinceDropdown(c *fiber.Ctx) error {
 	db := database.DB
 	sql1 := `
