@@ -150,37 +150,41 @@ func UpdatePosform(c *fiber.Ctx) error {
 	db := database.DB
 
 	type UpdateData struct {
-		Eq        int64  `json:"eq"`
-		Eq1       int64  `json:"eq1"`
-		Sold      int64  `json:"sold"`
-		Dhl       int64  `json:"dhl"`
-		Dhl1      int64  `json:"dhl1"`
-		Ar        int64  `json:"ar"`
-		Ar1       int64  `json:"ar1"`
-		Sbl       int64  `json:"sbl"`
-		Sbl1      int64  `json:"sbl1"`
-		Pmf       int64  `json:"pmf"`
-		Pmf1      int64  `json:"pmf1"`
-		Pmm       int64  `json:"pmm"`
-		Pmm1      int64  `json:"pmm1"`
-		Ticket    int64  `json:"ticket"`
-		Ticket1   int64  `json:"ticket1"`
-		Mtc       int64  `json:"mtc"`
-		Mtc1      int64  `json:"mtc1"`
-		Ws        int64  `json:"ws"`
-		Ws1       int64  `json:"ws1"`
-		Mast      int64  `json:"mast"`
-		Mast1     int64  `json:"mast1"`
-		Oris      int64  `json:"oris"`
-		Oris1     int64  `json:"oris1"`
-		Elite     int64  `json:"elite"`
-		Elite1    int64  `json:"elite1"`
-		Yes       int64  `json:"yes"`
-		Yes1      int64  `json:"yes1"`
-		Time      int64  `json:"time"`
-		Time1     int64  `json:"time1"`
-		Comment   string `json:"comment"`
-		Signature string `json:"signature"`
+		Eq        int64   `json:"eq"`
+		Eq1       int64   `json:"eq1"`
+		Sold      int64   `json:"sold"`
+		Dhl       int64   `json:"dhl"`
+		Dhl1      int64   `json:"dhl1"`
+		Ar        int64   `json:"ar"`
+		Ar1       int64   `json:"ar1"`
+		Sbl       int64   `json:"sbl"`
+		Sbl1      int64   `json:"sbl1"`
+		Pmf       int64   `json:"pmf"`
+		Pmf1      int64   `json:"pmf1"`
+		Pmm       int64   `json:"pmm"`
+		Pmm1      int64   `json:"pmm1"`
+		Ticket    int64   `json:"ticket"`
+		Ticket1   int64   `json:"ticket1"`
+		Mtc       int64   `json:"mtc"`
+		Mtc1      int64   `json:"mtc1"`
+		Ws        int64   `json:"ws"`
+		Ws1       int64   `json:"ws1"`
+		Mast      int64   `json:"mast"`
+		Mast1     int64   `json:"mast1"`
+		Oris      int64   `json:"oris"`
+		Oris1     int64   `json:"oris1"`
+		Elite     int64   `json:"elite"`
+		Elite1    int64   `json:"elite1"`
+		Yes       int64   `json:"yes"`
+		Yes1      int64   `json:"yes1"`
+		Time      int64   `json:"time"`
+		Time1     int64   `json:"time1"`
+		Comment   string  `json:"comment"`
+		Signature string  `json:"signature"`
+		Latitude  float64 `json:"latitude"`
+		Longitude float64 `json:"longitude"`
+
+		Price int64 `json:"price"`
 	}
 
 	var updateData UpdateData
@@ -229,6 +233,10 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform.Time1 = updateData.Time1
 	posform.Comment = updateData.Comment
 	posform.Signature = updateData.Signature
+
+	posform.Latitude = updateData.Latitude
+	posform.Longitude = updateData.Longitude
+	posform.Price = updateData.Price
 
 	db.Save(&posform)
 
