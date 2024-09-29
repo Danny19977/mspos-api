@@ -77,10 +77,10 @@ type PosFormPaginate struct {
 	Sup      string `json:"sup"`
 	Pos      string `json:"pos"`
 
-	Latitude  float64 `json:"latitude"`
-	Longitude float64 `json:"longitude"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
 
-	Price int64 `json:"price"`
+	Price string `json:"price"`
 
 	Signature string `json:"signature"`
 }

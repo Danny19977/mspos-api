@@ -147,6 +147,8 @@ func Setup(app *fiber.App) {
 	sum.Get("/better-dr/:start_date/:end_date", dashboard.BetterDR)
 	sum.Get("/better-supervisor/:start_date/:end_date", dashboard.BetterSup)
 	sum.Get("/status-equements/:start_date/:end_date", dashboard.StatusEquipement)
+	sum.Get("/google-maps/:start_date/:end_date", dashboard.GoogleMaps)
+	sum.Get("/price-sales/:start_date/:end_date", dashboard.PriceSale)
 
 	sos := dash.Group("/share-of-stock")
 	sos.Get("/sos-pie/:province/:start_date/:end_date", dashboard.SOSPieByArea)
