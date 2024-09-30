@@ -21,20 +21,20 @@ func Setup(app *fiber.App) {
 
 	api := app.Group("/api", logger.New())
 
-	api.Post("/reset/:token", authentification.ResetPassword)
-
+	
 	// Authentification controller
 	auth := api.Group("/auth")
 	auth.Post("/register", authentification.Register)
-	auth.Post("/login", authentification.Login)
-	auth.Post("/logout", authentification.Logout)
-	auth.Get("/user", authentification.AuthUser)
+	auth.Post("/login", authentification.Login) 
 	auth.Post("/forgot-password", authentification.Forgot)
+	auth.Post("/reset/:token", authentification.ResetPassword) 
 
 	app.Use(middlewares.IsAuthenticated)
 
-	auth.Put("/users/profile", authentification.UpdateInfo)
-	auth.Put("/users/password", authentification.UpdatePassword)
+	auth.Get("/user", authentification.AuthUser)
+	auth.Put("/profil/info", authentification.UpdateInfo)
+	auth.Put("/change-password", authentification.ChangePassword)
+	auth.Post("/logout", authentification.Logout)
 
 	// Users controller
 	user := api.Group("/users")

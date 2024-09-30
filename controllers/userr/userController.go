@@ -1,7 +1,6 @@
 package userr
 
 import (
-	"fmt"
 	"strconv"
 	"strings"
 
@@ -30,7 +29,6 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 	var length int64
 	db := database.DB
 	db.Find(&u).Count(&length) 
-	fmt.Println("length", length)
 
 	sql1 := `
 		SELECT "users"."id" AS id, fullname, title, email, phone, "provinces"."name" AS province, 
@@ -86,15 +84,6 @@ func GetAllUsers(c *fiber.Ctx) error {
 		"data":    users,
 	})
 }
-
-// Get All data
-// func GetUsers(c *fiber.Ctx) error {
-
-// 	p, _ := strconv.Atoi(c.Query("page", "1"))
-// 	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-// 	return c.JSON(models.Paginate(database.DB, &models.User{}, p, l))
-// }
 
 // query data
 func GetUserByID(c *fiber.Ctx) error {
@@ -167,7 +156,6 @@ func CreateUser(c *fiber.Ctx) error {
 		AreaID:     p.AreaID,
 		ProvinceID: p.ProvinceID,
 		SupID:      p.SupID,
-		// PosID:      p.PosID,
 		Role:       p.Role,
 		Permission: p.Permission,
 		Image:      p.Image,
@@ -217,7 +205,6 @@ func UpdateUser(c *fiber.Ctx) error {
 		AreaID     uint   `json:"area_id"`
 		ProvinceID uint   `json:"province_id"`
 		SupID      uint   `json:"sup_id"`
-		PosID      uint   `json:"pos_id"`
 		Role       string `json:"role"`
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
@@ -247,7 +234,6 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.AreaID = updateData.AreaID
 	user.ProvinceID = updateData.ProvinceID
 	user.SupID = updateData.SupID
-	// user.PosID = updateData.PosID
 	user.Role = updateData.Role
 	user.Permission = updateData.Permission
 	user.Image = updateData.Image
