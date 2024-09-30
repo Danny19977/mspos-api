@@ -16,19 +16,19 @@ type Area struct {
 }
 
 type AreaPaginate struct {
-	Id        uint     `json:"id"`
-	Name      string   `json:"name"`
-	Commune   []string `json:"commune"`
-	Province  string   `json:"province"`
-	Sup       string   `json:"sup"`
-	Signature string   `json:"signature"`
+	Id        uint   `json:"id"`
+	Name      string `json:"name"`
+	Commune   string `json:"commune"`
+	Province  string `json:"province"`
+	Sup       string `json:"sup"`
+	Signature string `json:"signature"`
 }
 
 type AreaDropDown struct {
-	Id         uint     `json:"id"`
-	Name       string   `json:"name"`
-	Commune    []string `json:"commune"`
-	ProvinceID uint     `json:"province_id"`
+	Id         uint   `json:"id"`
+	Name       string `json:"name"`
+	Commune    string `json:"commune"`
+	ProvinceID uint   `json:"province_id"`
 }
 
 func (p *Area) Count(db *gorm.DB) int64 {
