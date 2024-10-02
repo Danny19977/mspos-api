@@ -12,11 +12,11 @@ type Sup struct {
 }
 
 type SupPaginate struct {
-	Id  uint `json:"id"`
-	Name       string `json:"name"`
-	Province string   `json:"province"`
-	Asm      string   `json:"asm"`
-	Signature  string `json:"signature"`
+	Id        uint   `json:"id"`
+	Name      string `json:"name"`
+	Province  string `json:"province"`
+	Asm       string `json:"asm"`
+	Signature string `json:"signature"`
 }
 
 func (p *Sup) Count(db *gorm.DB) int64 {
