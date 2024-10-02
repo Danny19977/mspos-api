@@ -31,10 +31,11 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 	sql1 := `
 		SELECT "areas"."id" AS id,  
 		"areas"."name" AS name,
-		"provinces"."name" AS province,
+		"provinces"."name" AS province, 
+		"areas"."commune" AS commune,
 		"sups"."name" AS sup
 		FROM areas    
-		INNER JOIN provinces ON areas.province_id=areas.id 
+		INNER JOIN provinces ON areas.province_id=provinces.id 
 		INNER JOIN sups ON areas.sup_id=sups.id 
 		ORDER BY "areas"."updated_at" DESC;
 	`
@@ -72,13 +73,38 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 	})
 }
 
+
+// Get All Provinces Dropdown
+func GetAreaDropdown(c *fiber.Ctx) error {
+	db := database.DB
+	sql1 := `
+		SELECT "areas"."id" AS id, 
+			"areas"."name" AS name, 
+			"areas"."province_id" AS province_id,
+			"areas"."commune" AS commune
+		FROM pos_forms
+		INNER JOIN areas ON pos_forms.area_id=areas.id
+		GROUP BY "areas"."id", "areas"."name", "areas"."province_id";
+	`
+	var data []models.AreaDropDown
+	db.Raw(sql1).Scan(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All area Dropdown",
+		"data":    data,
+	})
+}
+
 // Get All data
 func GetAllAreas(c *fiber.Ctx) error {
-
-	p, _ := strconv.Atoi(c.Query("page", "1"))
-	l, _ := strconv.Atoi(c.Query("limit", "15"))
-
-	return c.JSON(models.Paginate(database.DB, &models.Area{}, p, l))
+	db := database.DB
+	var data []models.Area
+	db.Find(&data)
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All Areas",
+		"data":    data,
+	})
 }
 
 // query data

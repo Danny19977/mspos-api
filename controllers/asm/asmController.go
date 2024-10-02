@@ -34,7 +34,7 @@ func GetPaginatedASM(c *fiber.Ctx) error {
 		"asms"."name" AS name,
 		"provinces"."name" AS province 
 		FROM asms    
-		INNER JOIN provinces ON asms.province_id=asms.id 
+		INNER JOIN provinces ON asms.province_id=provinces.id 
 		ORDER BY "asms"."updated_at" DESC;
 	`
 	var dataList []models.AsmPaginate

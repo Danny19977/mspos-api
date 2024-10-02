@@ -20,6 +20,11 @@ type ProvincePaginate struct {
 	Signature    string `json:"signature"`
 }
 
+type ProvinceDropDown struct { 
+	Id  uint `json:"id"`
+	Name  string  `json:"name"`
+}
+
 func (p *Province) Count(db *gorm.DB) int64 {
 	var total int64
 	db.Model(&Province{}).Count(&total)

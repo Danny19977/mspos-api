@@ -21,20 +21,20 @@ func Setup(app *fiber.App) {
 
 	api := app.Group("/api", logger.New())
 
-	api.Post("/reset/:token", authentification.ResetPassword)
-
+	
 	// Authentification controller
 	auth := api.Group("/auth")
 	auth.Post("/register", authentification.Register)
-	auth.Post("/login", authentification.Login)
-	auth.Post("/logout", authentification.Logout)
-	auth.Get("/user", authentification.AuthUser)
+	auth.Post("/login", authentification.Login) 
 	auth.Post("/forgot-password", authentification.Forgot)
+	auth.Post("/reset/:token", authentification.ResetPassword) 
 
 	app.Use(middlewares.IsAuthenticated)
 
-	auth.Put("/users/profile", authentification.UpdateInfo)
-	auth.Put("/users/password", authentification.UpdatePassword)
+	auth.Get("/user", authentification.AuthUser)
+	auth.Put("/profil/info", authentification.UpdateInfo)
+	auth.Put("/change-password", authentification.ChangePassword)
+	auth.Post("/logout", authentification.Logout)
 
 	// Users controller
 	user := api.Group("/users")
@@ -50,6 +50,7 @@ func Setup(app *fiber.App) {
 	prov := api.Group("/provinces")
 	prov.Get("/all", province.GetAllProvinces)
 	prov.Get("/all/paginate", province.GetPaginatedProvince)
+	prov.Get("/all/dropdown", province.GetProvinceDropdown)
 	prov.Get("/all/:id", province.GetProvinceByID)
 	prov.Post("/create", province.CreateProvince)
 	prov.Get("/get/:id", province.GetProvince)
@@ -60,6 +61,7 @@ func Setup(app *fiber.App) {
 	ar := api.Group("/areas")
 	ar.Get("/all", area.GetAllAreas)
 	ar.Get("/all/paginate", area.GetPaginatedAreas)
+	ar.Get("/all/dropdown", area.GetAreaDropdown)
 	ar.Get("/all/:id", area.GetAreaByID)
 	ar.Get("/all-area/:id", area.GetSupAreaByID)
 	ar.Post("/create", area.CreateArea)
@@ -145,6 +147,8 @@ func Setup(app *fiber.App) {
 	sum.Get("/better-dr/:start_date/:end_date", dashboard.BetterDR)
 	sum.Get("/better-supervisor/:start_date/:end_date", dashboard.BetterSup)
 	sum.Get("/status-equements/:start_date/:end_date", dashboard.StatusEquipement)
+	sum.Get("/google-maps/:start_date/:end_date", dashboard.GoogleMaps)
+	sum.Get("/price-sales/:start_date/:end_date", dashboard.PriceSale)
 
 	sos := dash.Group("/share-of-stock")
 	sos.Get("/sos-pie/:province/:start_date/:end_date", dashboard.SOSPieByArea)

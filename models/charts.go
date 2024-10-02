@@ -92,3 +92,13 @@ type StatusEquip struct {
 	Equipement string
 	Count int64
 }
+
+type GoogleMap struct {
+	Latitude string
+	Longitude string
+}
+
+type PriceChart struct {
+	Price string
+	Count int64
+}

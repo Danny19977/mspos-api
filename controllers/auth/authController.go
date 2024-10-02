@@ -93,15 +93,14 @@ func Login(c *fiber.Ctx) error {
 	if u.ID == 0 {
 		c.Status(404)
 		return c.JSON(fiber.Map{
-			"message": "invalid login credentials email 😰",
+			"message": "invalid email 😰",
 		})
 	}
 
 	if err := u.ComparePassword(lu.Password); err != nil {
-
 		c.Status(400)
 		return c.JSON(fiber.Map{
-			"message": "invalid login credentials 😰",
+			"message": "mot de passe incorrect! 😰",
 		})
 	}
 
@@ -121,8 +120,8 @@ func Login(c *fiber.Ctx) error {
 		Name:     "token",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
-		HTTPOnly: true, 
-		Secure:true, 
+		HTTPOnly: true,
+		Secure:   true,
 		SameSite: "none",
 	}
 
@@ -146,16 +145,15 @@ func AuthUser(c *fiber.Ctx) error {
 	database.DB.Where("id = ?", userId).First(&u)
 
 	r := &models.UserResponse{
-		Id:         u.ID,
-		Fullname:   u.Fullname,
-		Email:      u.Email,
-		Title:      u.Title,
-		Phone:      u.Phone,
-		Role:       u.Role,
-		Area:       u.AreaID,
-		Province:   u.ProvinceID,
-		Sup:        u.SupID,
-		// Pos:        u.PosID,
+		Id:       u.ID,
+		Fullname: u.Fullname,
+		Email:    u.Email,
+		Title:    u.Title,
+		Phone:    u.Phone,
+		Role:     u.Role,
+		Area:     u.AreaID,
+		Province: u.ProvinceID,
+		Sup:      u.SupID, 
 		Permission: u.Permission,
 		Status:     u.Status,
 		CreatedAt:  u.CreatedAt,
@@ -176,7 +174,7 @@ func Logout(c *fiber.Ctx) error {
 
 	return c.JSON(fiber.Map{
 		"message": "success",
-		"Logout": "success",
+		"Logout":  "success",
 	})
 
 }
@@ -186,16 +184,7 @@ func UpdateInfo(c *fiber.Ctx) error {
 	type UpdateDataInput struct {
 		Fullname   string `json:"fullname"`
 		Email      string `json:"email"`
-		Title      string `json:"title"`
 		Phone      string `json:"phone"`
-		AreaID     uint   `json:"area_id"`
-		ProvinceID uint   `json:"province_id"`
-		SupID      uint   `json:"sup_id"`
-		// PosID      uint   `json:"pos_id"`
-		Role       string `json:"role"`
-		Permission string `json:"permission"`
-		Image      string `json:"image"`
-		Status     bool   `json:"status"`
 		Signature  string `json:"signature"`
 	}
 	var updateData UpdateDataInput
@@ -221,16 +210,7 @@ func UpdateInfo(c *fiber.Ctx) error {
 	db.First(&user, userId)
 	user.Fullname = updateData.Fullname
 	user.Email = updateData.Email
-	user.Title = updateData.Title
 	user.Phone = updateData.Phone
-	user.AreaID = updateData.AreaID
-	user.ProvinceID = updateData.ProvinceID
-	user.SupID = updateData.SupID
-	// user.PosID = updateData.PosID
-	user.Role = updateData.Role
-	user.Permission = updateData.Permission
-	user.Image = updateData.Image
-	user.Status = updateData.Status
 	user.Signature = updateData.Signature
 
 	db.Save(&user)
@@ -243,10 +223,11 @@ func UpdateInfo(c *fiber.Ctx) error {
 
 }
 
-func UpdatePassword(c *fiber.Ctx) error {
+func ChangePassword(c *fiber.Ctx) error {
 	type UpdateDataInput struct {
+		OldPassword     string `json:"old_password"`
 		Password        string `json:"password"`
-		PasswordConfirm string `json:"PasswordConfirm"`
+		PasswordConfirm string `json:"password_confirm"`
 	}
 	var updateData UpdateDataInput
 
@@ -258,19 +239,28 @@ func UpdatePassword(c *fiber.Ctx) error {
 		})
 	}
 
+	cookie := c.Cookies("token")
+
+	userId, _ := utils.VerifyJwt(cookie) 
+
+	user := new(models.User)
+
+	database.DB.Where("id = ?", userId).First(&user)
+
+
+	if err := user.ComparePassword(updateData.OldPassword); err != nil {
+		c.Status(400)
+		return c.JSON(fiber.Map{
+			"message": "votre mot de passe n'est pas correct! 😰",
+		})
+	}
+
 	if updateData.Password != updateData.PasswordConfirm {
 		c.Status(400)
 		return c.JSON(fiber.Map{
 			"message": "passwords do not match",
 		})
-	}
-
-	cookie := c.Cookies("token")
-
-	Id, _ := utils.VerifyJwt(cookie)
-	userId, _ := strconv.Atoi(Id)
-
-	user := new(models.User)
+	} 
 
 	p, err := utils.HashPassword(updateData.Password)
 	if err != nil {
@@ -279,8 +269,10 @@ func UpdatePassword(c *fiber.Ctx) error {
 
 	db := database.DB
 
-	db.First(&user, userId)
-	user.Password = p
+	db.First(&user, user.ID)
+	user.Password = p 
+
+	db.Save(&user)
 
 	// successful update remove cookies
 	rmCookie := fiber.Cookie{
