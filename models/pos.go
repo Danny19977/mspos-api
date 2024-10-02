@@ -43,8 +43,8 @@ type PosPaginate struct {
 	Cparasol           bool   `json:"cparasol"`
 	Ctable             bool   `json:"ctable"`
 	Ckiosk             bool   `json:"ckiosk"`
-	Province         string `json:"province"`
-	Area             string `json:"area"`
+	Province           string `json:"province"`
+	Area               string `json:"area"`
 	Status             bool   `json:"status"`
 	Signature          string `json:"signature"`
 }

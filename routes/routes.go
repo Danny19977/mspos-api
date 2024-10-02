@@ -124,7 +124,8 @@ func Setup(app *fiber.App) {
 	// UserLogs controller
 	userLog := api.Group("/users-logs")
 	userLog.Get("/all", userlogs.GetUserLogs)
-	// userLog.Get("/all/:id", userlogs.GetUserLogByID)
+	userLog.Get("/all/paginate", userlogs.GetPaginatedUserLogs)
+	userLog.Get("/all/:id", userlogs.GetUserLogByID)
 	userLog.Post("/create", userlogs.CreateUserLog)
 	userLog.Get("/get/:id", userlogs.GetUserLog)
 	userLog.Put("/update/:id", userlogs.UpdateUserLog)
