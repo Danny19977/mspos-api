@@ -88,9 +88,9 @@ func GetUserLogs(c *fiber.Ctx) error {
 	})
 }
 
-// query data   
+// query data
 func GetUserLogByID(c *fiber.Ctx) error {
-	userId := c.Params("user_id")
+	userId := c.Params("id")
 
 	pageSizeStr := c.Query("page_size")
 	pageStr := c.Query("page") // CurrentPage
@@ -108,7 +108,7 @@ func GetUserLogByID(c *fiber.Ctx) error {
 	var u []models.UserLogs
 	var length int64
 	db := database.DB
-	db.Find(&u).Count(&length)
+	db.Where("user_id = ?", userId).Find(&u).Count(&length)
 
 	sql1 := `
 		SELECT "user_logs"."id" AS id,  
@@ -157,7 +157,6 @@ func GetUserLogByID(c *fiber.Ctx) error {
 	})
 }
 
-
 // Get one data
 func GetUserLog(c *fiber.Ctx) error {
 	id := c.Params("id")
@@ -202,10 +201,10 @@ func UpdateUserLog(c *fiber.Ctx) error {
 
 	type UpdateData struct {
 		Name        string `json:"name"`
-		UserID      uint `json:"user_id"`
+		UserID      uint   `json:"user_id"`
 		Action      string `json:"action"`
 		Description string `json:"description"`
-		Signature    string `json:"signature"`
+		Signature   string `json:"signature"`
 	}
 
 	var updateData UpdateData
