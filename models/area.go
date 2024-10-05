@@ -18,8 +18,8 @@ type Area struct {
 type AreaPaginate struct {
 	Id        uint   `json:"id"`
 	Name      string `json:"name"`
-	Commune   string `json:"commune"`
 	Province  string `json:"province"`
+	Commune   string `json:"commune"`
 	Sup       string `json:"sup"`
 	Signature string `json:"signature"`
 }

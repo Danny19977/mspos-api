@@ -25,7 +25,6 @@ func getPort() string {
 	return port
 }
 
-
 func main() {
 
 	database.Connect()
@@ -37,7 +36,7 @@ func main() {
 
 	// Middleware
 	app.Use(cors.New(cors.Config{
-		AllowOrigins:     "https://mspos-5n2r.onrender.com, http://localhost:4200",
+		AllowOrigins:     "https://mspos-web.web.app, http://localhost:4200",
 		AllowHeaders:     "Origin, Content-Type, Accept",
 		AllowCredentials: true,
 		AllowMethods: strings.Join([]string{

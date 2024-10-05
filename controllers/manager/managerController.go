@@ -32,6 +32,7 @@ func GetPaginatedManager(c *fiber.Ctx) error {
 		SELECT "managers"."id" AS id,  
 		"managers"."name" AS name
 		FROM managers   
+		WHERE "managers"."deleted_at" IS NULL
 		ORDER BY "managers"."updated_at" DESC;
 	`
 	var dataList []models.ManagerPaginate

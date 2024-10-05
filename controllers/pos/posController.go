@@ -52,7 +52,7 @@ func GetPaginatedPos(c *fiber.Ctx) error {
 		FROM pos 
 			INNER JOIN provinces ON pos.province_id=provinces.id  
 			INNER JOIN areas ON pos.area_id=areas.id  
- 
+			WHERE "pos"."deleted_at" IS NULL
 		ORDER BY "pos"."updated_at" DESC;
 	`
 	var dataList []models.PosPaginate

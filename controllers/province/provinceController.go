@@ -31,6 +31,7 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 	sql1 := `
 		SELECT "provinces"."id" AS id, "provinces"."name" AS name 
 		FROM provinces  
+		WHERE "provinces"."deleted_at" IS NULL
 		ORDER BY "provinces"."updated_at" DESC;
 	`
 	var dataList []models.ProvincePaginate
@@ -74,6 +75,7 @@ func GetProvinceDropdown(c *fiber.Ctx) error {
 		SELECT "provinces"."id" AS id, "provinces"."name" AS name
 		FROM pos_forms
 		INNER JOIN provinces ON pos_forms.province_id=provinces.id
+		WHERE "pos_forms"."deleted_at" IS NULL
 		GROUP BY "provinces"."id", "provinces"."name"; 
 	`
 	var data []models.ProvinceDropDown

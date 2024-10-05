@@ -35,6 +35,7 @@ func GetPaginatedSups(c *fiber.Ctx) error {
 		FROM sups 
 			INNER JOIN provinces ON sups.province_id=provinces.id 
 			INNER JOIN asms ON sups.asm_id=asms.id 
+			WHERE "sups"."deleted_at" IS NULL
 		ORDER BY "sups"."updated_at" DESC;
 	`
 	var dataList []models.SupPaginate
