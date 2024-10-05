@@ -74,6 +74,138 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 	})
 }
 
+// query data province
+func GetUserByProvinceID(c *fiber.Ctx) error {
+	provinceId := c.Params("id")
+
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
+
+	var u []models.User
+	var length int64
+	db := database.DB
+	db.Where("province_id = ?", provinceId).Find(&u).Count(&length)
+
+	sql1 := `
+	SELECT "users"."id" AS id, fullname, title, email, phone, "provinces"."name" AS province, 
+		"areas"."name" AS area, "sups"."name" AS sup, status 
+		FROM users 
+			INNER JOIN provinces ON users.province_id=provinces.id
+			INNER JOIN areas ON users.area_id=areas.id
+			INNER JOIN sups ON users.sup_id=sups.id
+		WHERE "users"."deleted_at" IS NULL AND "users"."province_id"=?
+		ORDER BY "users"."updated_at" DESC;
+	`
+	var dataList []models.UserPaginate
+	database.DB.Raw(sql1, provinceId).Scan(&dataList)
+
+	if offset >= len(dataList) {
+		dataList = []models.UserPaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(dataList) {
+			end = len(dataList)
+		}
+		dataList = dataList[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All user by province",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
+// query data sup by area
+func GetUserBySupID(c *fiber.Ctx) error {
+	areaId := c.Params("id")
+
+	pageSizeStr := c.Query("page_size")
+	pageStr := c.Query("page") // CurrentPage
+
+	pageSize, err := strconv.Atoi(pageSizeStr)
+	if err != nil || pageSize <= 0 {
+		pageSize = 15
+	}
+	page, err := strconv.Atoi(pageStr)
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	offset := (page - 1) * pageSize
+
+	var u []models.User
+	var length int64
+	db := database.DB
+	db.Where("area_id = ?", areaId).Find(&u).Count(&length)
+
+	sql1 := `
+	SELECT "users"."id" AS id, fullname, title, email, phone, "provinces"."name" AS province, 
+		"areas"."name" AS area, "sups"."name" AS sup, status 
+		FROM users 
+			INNER JOIN provinces ON users.province_id=provinces.id
+			INNER JOIN areas ON users.area_id=areas.id
+			INNER JOIN sups ON users.sup_id=sups.id
+		WHERE "users"."deleted_at" IS NULL AND "users"."area_id"=?
+		ORDER BY "users"."updated_at" DESC;
+	`
+	var dataList []models.UserPaginate
+	database.DB.Raw(sql1, areaId).Scan(&dataList)
+
+	if offset >= len(dataList) {
+		dataList = []models.UserPaginate{} // Empty slice
+	} else {
+		end := offset + pageSize
+		if end > len(dataList) {
+			end = len(dataList)
+		}
+		dataList = dataList[offset:end]
+	}
+	// Calculate total number of pages
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
+		totalPages++
+	}
+
+	// Create pagination metadata (adjust fields as needed)
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   pageSize,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All user by area",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
 // query all data
 func GetAllUsers(c *fiber.Ctx) error {
 	db := database.DB
