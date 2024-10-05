@@ -230,7 +230,13 @@ func CreatePosform(c *fiber.Ctx) error {
 
 	database.DB.Create(p)
 
-	return c.JSON(p)
+	return c.JSON(
+		fiber.Map{
+			"status":  "success",
+			"message": "posForm created success",
+			"data":    p,
+		},
+	)
 }
 
 // Update data

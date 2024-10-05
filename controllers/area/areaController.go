@@ -74,7 +74,6 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 	})
 }
 
-
 // Get All Provinces Dropdown
 func GetAreaDropdown(c *fiber.Ctx) error {
 	db := database.DB
@@ -115,11 +114,11 @@ func GetAreaByID(c *fiber.Ctx) error {
 	db := database.DB
 	var areas []models.Area
 	db.Where("province_id = ?", id).Find(&areas)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "areas by id found", 
-		"data": areas,
+		"status":  "success",
+		"message": "areas by id found",
+		"data":    areas,
 	})
 }
 
@@ -129,14 +128,13 @@ func GetSupAreaByID(c *fiber.Ctx) error {
 	db := database.DB
 	var areas []models.Area
 	db.Where("sup_id = ?", id).Find(&areas)
-	 
+
 	return c.JSON(fiber.Map{
-		"status": "success", 
-		"message": "poss by id found", 
-		"data": areas,
+		"status":  "success",
+		"message": "poss by id found",
+		"data":    areas,
 	})
 }
-
 
 // Get one data
 func GetArea(c *fiber.Ctx) error {
@@ -172,7 +170,13 @@ func CreateArea(c *fiber.Ctx) error {
 
 	database.DB.Create(p)
 
-	return c.JSON(p)
+	return c.JSON(
+		fiber.Map{
+			"status":  "success",
+			"message": "area created success",
+			"data":    p,
+		},
+	)
 }
 
 // Update data
