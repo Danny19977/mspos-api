@@ -37,6 +37,7 @@ func GetPaginatedAreas(c *fiber.Ctx) error {
 		FROM areas    
 		INNER JOIN provinces ON areas.province_id=provinces.id 
 		INNER JOIN sups ON areas.sup_id=sups.id 
+		WHERE "areas"."deleted_at" IS NULL
 		ORDER BY "areas"."updated_at" DESC;
 	`
 	var dataList []models.AreaPaginate
@@ -84,6 +85,7 @@ func GetAreaDropdown(c *fiber.Ctx) error {
 			"areas"."commune" AS commune
 		FROM pos_forms
 		INNER JOIN areas ON pos_forms.area_id=areas.id
+		WHERE "pos_forms"."deleted_at" IS NULL
 		GROUP BY "areas"."id", "areas"."name", "areas"."province_id";
 	`
 	var data []models.AreaDropDown

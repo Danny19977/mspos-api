@@ -58,7 +58,7 @@ func GetPaginatedPosForm(c *fiber.Ctx) error {
 			INNER JOIN users ON pos_forms.user_id=users.id 
 			INNER JOIN areas ON pos_forms.area_id=areas.id 
 			INNER JOIN pos ON pos_forms.pos_id=pos.id 
- 
+ WHERE "pos_forms"."deleted_at" IS NULL 
 		ORDER BY "pos_forms"."updated_at" DESC;
 	`
 	var dataList []models.PosFormPaginate
@@ -147,7 +147,7 @@ func GetPosformByID(c *fiber.Ctx) error {
 			INNER JOIN users ON pos_forms.user_id=users.id 
 			INNER JOIN areas ON pos_forms.area_id=areas.id 
 			INNER JOIN pos ON pos_forms.pos_id=pos.id 
- 		WHERE "pos_forms"."user_id"=?
+ 		WHERE "pos_forms"."deleted_at" IS NULL AND "pos_forms"."user_id"=?
 		ORDER BY "pos_forms"."updated_at" DESC; 
 	`
 	var dataList []models.UserLogPaginate

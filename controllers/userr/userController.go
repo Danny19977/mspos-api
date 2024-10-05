@@ -37,6 +37,7 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 			INNER JOIN provinces ON users.province_id=provinces.id
 			INNER JOIN areas ON users.area_id=areas.id
 			INNER JOIN sups ON users.sup_id=sups.id
+		WHERE "users"."deleted_at" IS NULL
 		ORDER BY "users"."updated_at" DESC;
 	`
 	var users []models.UserPaginate

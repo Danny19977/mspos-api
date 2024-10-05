@@ -39,6 +39,7 @@ func GetPaginatedUserLogs(c *fiber.Ctx) error {
 		"users"."title" AS title
 		FROM user_logs 
 			INNER JOIN users ON user_logs.user_id=users.id   
+			WHERE "user_logs"."deleted_at" IS NULL
 		ORDER BY "user_logs"."updated_at" DESC;
 	`
 	var dataList []models.UserLogPaginate
@@ -120,7 +121,7 @@ func GetUserLogByID(c *fiber.Ctx) error {
 		"users"."title" AS title
 		FROM user_logs 
 			INNER JOIN users ON user_logs.user_id=users.id   
-			WHERE "user_logs"."user_id"=?
+			WHERE "user_logs"."deleted_at" IS NULL AND "user_logs"."user_id"=?
 			ORDER BY "user_logs"."updated_at" DESC;
 	`
 	var dataList []models.UserLogPaginate
