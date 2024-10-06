@@ -40,21 +40,21 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 		WHERE "users"."deleted_at" IS NULL
 		ORDER BY "users"."updated_at" DESC;
 	`
-	var users []models.UserPaginate
-	database.DB.Raw(sql1).Scan(&users)
+	var dataList []models.UserPaginate
+	database.DB.Raw(sql1).Scan(&dataList)
 
-	if offset >= len(users) {
-		users = []models.UserPaginate{} // Empty slice
+	if offset >= len(dataList) {
+		dataList = []models.UserPaginate{} // Empty slice
 	} else {
 		end := offset + pageSize
-		if end > len(users) {
-			end = len(users)
+		if end > len(dataList) {
+			end = len(dataList)
 		}
-		users = users[offset:end]
+		dataList = dataList[offset:end]
 	}
 	// Calculate total number of pages
-	totalPages := len(users) / pageSize
-	if remainder := len(users) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / pageSize
+	if remainder := len(dataList) % pageSize; remainder > 0 {
 		totalPages++
 	}
 
@@ -69,7 +69,7 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 	return c.JSON(fiber.Map{
 		"status":     "success",
 		"message":    "All users",
-		"data":       users,
+		"data":       dataList,
 		"pagination": pagination,
 	})
 }

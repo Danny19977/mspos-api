@@ -8,7 +8,7 @@ import (
 
 func DrCount(c *fiber.Ctx) error {
 	sql1 := `
-	 SELECT COUNT(*) FROM users WHERE role='DR' AND status=true;
+	 SELECT COUNT(*) FROM users WHERE "users"."deleted_at" IS NULL AND role='DR' AND status=true;
 	`
 	var chartData models.SummaryCount
 	database.DB.Raw(sql1).Scan(&chartData)
@@ -21,7 +21,7 @@ func DrCount(c *fiber.Ctx) error {
 
 func POSCount(c *fiber.Ctx) error {
 	sql1 := `
-	 SELECT COUNT(*) FROM pos WHERE status=true;
+	 SELECT COUNT(*) FROM pos WHERE "pos"."deleted_at" IS NULL AND status=true;
 	`
 	var chartData models.SummaryCount
 	database.DB.Raw(sql1).Scan(&chartData)
@@ -34,7 +34,7 @@ func POSCount(c *fiber.Ctx) error {
 
 func ProvinceCount(c *fiber.Ctx) error {
 	sql1 := `
-	 SELECT COUNT(*) FROM provinces;
+	 SELECT COUNT(*) FROM provinces WHERE "provinces"."deleted_at" IS NULL;
 	`
 
 	var chartData models.SummaryCount
@@ -48,7 +48,7 @@ func ProvinceCount(c *fiber.Ctx) error {
 
 func AreaCount(c *fiber.Ctx) error {
 	sql1 := `
-	 SELECT COUNT(*) FROM areas;
+	 SELECT COUNT(*) FROM areas WHERE "areas"."deleted_at" IS NULL;
 	`
 
 	var chartData models.SummaryCount
@@ -72,7 +72,7 @@ func SOSPie(c *fiber.Ctx) error {
 			SUM(time) ) * 100) AS eq
 		FROM pos_forms 
 			INNER JOIN provinces ON pos_forms.province_id=provinces.id
-				WHERE "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
+				WHERE "pos_forms"."deleted_at" IS NULL AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
 				AND ? ::TIMESTAMP 
 		GROUP BY "provinces"."name"; 
 	`
@@ -111,14 +111,14 @@ func TrackingVisitDRS(c *fiber.Ctx) error {
 	ROUND(100 - ROUND(SUM(eq1) / COUNT("pos_forms"."id") * 100)) AS oos,
 	(SELECT COUNT(*) FROM users 
 		INNER JOIN provinces ON users.province_id=provinces.id
-		WHERE role='DR' AND status=true AND province_id="provinces"."id") AS dr,
+		WHERE "users"."deleted_at" IS NULL AND role='DR' AND status=true AND province_id="provinces"."id") AS dr,
 		
 	COUNT("pos_forms"."id") AS visit,
 
 	ROUND(40 * (SELECT COUNT(*) 
 			FROM users 
 			INNER JOIN provinces ON users.province_id=provinces.id
-				WHERE role='DR' AND status=true AND province_id="provinces"."id") * 
+				WHERE  "users"."deleted_at" IS NULL AND role='DR' AND status=true AND province_id="provinces"."id") * 
 	CASE 
 		WHEN ? = 0 THEN 1
 			ELSE ?
@@ -127,7 +127,7 @@ func TrackingVisitDRS(c *fiber.Ctx) error {
 		ROUND(COUNT("pos_forms"."id") / (40 * (SELECT COUNT(*) 
 			FROM users 
 			INNER JOIN provinces ON users.province_id=provinces.id
-				WHERE role='DR' AND status=true AND province_id="provinces"."id") * 
+				WHERE  "users"."deleted_at" IS NULL AND role='DR' AND status=true AND province_id="provinces"."id") * 
 	CASE 
 			WHEN ? = 0 THEN 1
 			ELSE ?
@@ -136,7 +136,7 @@ func TrackingVisitDRS(c *fiber.Ctx) error {
 			FROM pos_forms 
 					INNER JOIN provinces ON pos_forms.province_id=provinces.id
 				INNER JOIN users ON pos_forms.user_id=users.id
-					WHERE "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
+					WHERE "pos_forms"."deleted_at" IS NULL AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
 					AND ? ::TIMESTAMP
 
 	GROUP BY "provinces"."name";
@@ -167,7 +167,7 @@ func SummaryChartBar(c *fiber.Ctx) error {
 		FROM pos_forms 
 				INNER JOIN provinces ON pos_forms.province_id=provinces.id
 			INNER JOIN users ON pos_forms.user_id=users.id
-				WHERE "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
+				WHERE "pos_forms"."deleted_at" IS NULL AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP  
 				AND ? ::TIMESTAMP
 
 		GROUP BY "provinces"."name";
@@ -195,7 +195,7 @@ func BetterDR(c *fiber.Ctx) error {
 	INNER JOIN users ON pos_forms.user_id=users.id
 	INNER JOIN provinces ON pos_forms.province_id=provinces.id
 	INNER JOIN areas ON pos_forms.province_id=areas.id
-	WHERE "users"."role"='DR' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+	WHERE "pos_forms"."deleted_at" IS NULL AND "users"."role"='DR' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
 			AND ? ::TIMESTAMP
 	GROUP BY fullname, "provinces"."name", "areas"."name"
 	ORDER BY ventes DESC
@@ -223,7 +223,7 @@ func BetterSup(c *fiber.Ctx) error {
 		INNER JOIN users ON pos_forms.user_id=users.id
 		INNER JOIN provinces ON pos_forms.province_id=provinces.id
 		INNER JOIN areas ON pos_forms.province_id=areas.id
-		WHERE "users"."role"='Supervisor' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+		WHERE "pos_forms"."deleted_at" IS NULL AND "users"."role"='Supervisor' AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
 				AND ? ::TIMESTAMP
 		GROUP BY fullname, "provinces"."name", "areas"."name"
 		ORDER BY ventes DESC
@@ -247,7 +247,7 @@ func StatusEquipement(c *fiber.Ctx) error {
 		COUNT(input_group_selector) AS count
 		FROM pos_forms
 		INNER JOIN pos ON pos_forms.pos_id=pos.id 
-		WHERE "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+		WHERE "pos_forms"."deleted_at" IS NULL AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
 				AND ? ::TIMESTAMP
 		GROUP BY input_group_selector;
 	`
@@ -271,7 +271,7 @@ func GoogleMaps(c *fiber.Ctx) error {
 			latitude AS latitude,
 			longitude AS longitude
 		FROM pos_forms 
-		WHERE latitude::FLOAT != 0 AND longitude::FLOAT != 0 AND
+		WHERE "pos_forms"."deleted_at" IS NULL AND latitude::FLOAT != 0 AND longitude::FLOAT != 0 AND
 		"pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
 			AND ? ::TIMESTAMP ;
 	`
@@ -294,7 +294,7 @@ func PriceSale(c *fiber.Ctx) error {
 		SELECT price AS price,
 		COUNT(*)
 		FROM pos_forms  
-		WHERE created_at BETWEEN ? ::TIMESTAMP AND ? ::TIMESTAMP
+		WHERE "pos_forms"."deleted_at" IS NULL AND created_at BETWEEN ? ::TIMESTAMP AND ? ::TIMESTAMP
 		GROUP BY price;
 	`
 	var chartData []models.PriceChart
