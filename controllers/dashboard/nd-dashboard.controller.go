@@ -30,7 +30,7 @@ func NdTableView(c *fiber.Ctx) error {
 		FROM pos_forms
 		INNER JOIN areas ON pos_forms.area_id=areas.id
 		INNER JOIN provinces ON pos_forms.province_id=provinces.id
-		WHERE "provinces"."name"= ? AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
+		WHERE "pos_forms"."deleted_at" IS NULL AND "provinces"."name"= ? AND "pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
 			AND ? ::TIMESTAMP 
 		GROUP BY areas.name;
 	`
@@ -51,7 +51,7 @@ func NdByYear(c *fiber.Ctx) error {
 		ROUND(SUM(eq1) / COUNT(*) * 100) AS eq
 	FROM pos_forms
 	INNER JOIN provinces ON pos_forms.province_id=provinces.id
-	WHERE "provinces"."name"=? AND 
+	WHERE "pos_forms"."deleted_at" IS NULL AND "provinces"."name"=? AND 
     EXTRACT(YEAR FROM "pos_forms"."created_at") = EXTRACT(YEAR FROM CURRENT_DATE)
 		AND EXTRACT(MONTH FROM "pos_forms"."created_at") BETWEEN 1 AND 12 
     
