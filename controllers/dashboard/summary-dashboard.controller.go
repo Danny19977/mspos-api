@@ -21,7 +21,7 @@ func DrCount(c *fiber.Ctx) error {
 
 func POSCount(c *fiber.Ctx) error {
 	sql1 := `
-	 SELECT COUNT(*) FROM pos WHERE "pos"."deleted_at" IS NULL AND status=true;
+	 SELECT COUNT(*) FROM pos WHERE "pos"."deleted_at" IS NULL AND status=true; 
 	`
 	var chartData models.SummaryCount
 	database.DB.Raw(sql1).Scan(&chartData)

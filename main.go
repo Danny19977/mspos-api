@@ -9,7 +9,6 @@ import (
 	"github.com/kgermando/mspos-api/database"
 	"github.com/kgermando/mspos-api/routes"
 
-	// "github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 )

@@ -22,6 +22,7 @@ type Pos struct {
 	Ckiosk             bool   `json:"ckiosk"`
 	ProvinceID         uint   `gorm:"foreignKey:province_id" json:"province_id"`
 	AreaID             uint   `gorm:"foreignKey:area_id" json:"area_id"`
+	UserID             uint   `gorm:"foreignKey:user_id" json:"user_id"`
 	Status             bool   `json:"status"`
 	Signature          string `json:"signature"`
 }
@@ -45,6 +46,7 @@ type PosPaginate struct {
 	Ckiosk             bool   `json:"ckiosk"`
 	Province           string `json:"province"`
 	Area               string `json:"area"`
+	User               string `json:"user"`
 	Status             bool   `json:"status"`
 	Signature          string `json:"signature"`
 }
