@@ -8,7 +8,6 @@ import (
 	"github.com/kgermando/mspos-api/models"
 )
 
-
 // Paginate
 func GetPaginatedASM(c *fiber.Ctx) error {
 	pageSizeStr := c.Query("page_size")

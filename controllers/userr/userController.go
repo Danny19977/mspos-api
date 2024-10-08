@@ -37,7 +37,7 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 			INNER JOIN provinces ON users.province_id=provinces.id
 			INNER JOIN areas ON users.area_id=areas.id
 			INNER JOIN sups ON users.sup_id=sups.id
-		WHERE "users"."deleted_at" IS NULL
+		WHERE "users"."deleted_at" IS NULL 
 		ORDER BY "users"."updated_at" DESC;
 	`
 	var dataList []models.UserPaginate
@@ -223,7 +223,7 @@ func GetUserByID(c *fiber.Ctx) error {
 	id := c.Params("id")
 	db := database.DB
 	var users []models.User
-	db.Where("province_id = ?", id).Find(&users)
+	db.Where("province_id = ?", id).Where("role != ?", "Manager").Where("role != ?", "Support").Find(&users)
 
 	return c.JSON(fiber.Map{
 		"status":  "success",
