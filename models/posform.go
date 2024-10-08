@@ -43,10 +43,10 @@ type PosForm struct {
 	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"`
 	PosID      uint `gorm:"foreignKey:pos_id" json:"pos_id"`
 
-	Latitude  float64 `gorm:"default: 0" json:"latitude"`
-	Longitude float64 `gorm:"default: 0" json:"longitude"`
+	Latitude  string `json:"latitude"`
+	Longitude string `json:"longitude"`
 
-	Price int64 `gorm:"default: 0" json:"price"`
+	Price string `gorm:"default: 0" json:"price"`
 
 	Signature string `json:"signature"`
 }
