@@ -115,14 +115,16 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
+ 
 
 	cookie := fiber.Cookie{
 		Name:     "token",
 		Value:    token,
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
 		HTTPOnly: true,
-		Secure:   true,
+		Secure:   true, 
 		SameSite: "none",
+		SessionOnly: true,
 	}
 
 	c.Cookie(&cookie)
