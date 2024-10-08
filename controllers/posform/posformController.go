@@ -454,10 +454,10 @@ func UpdatePosform(c *fiber.Ctx) error {
 		Time1     int64   `json:"time1"`
 		Comment   string  `json:"comment"`
 		Signature string  `json:"signature"`
-		Latitude  float64 `json:"latitude"`
-		Longitude float64 `json:"longitude"`
+		Latitude  string `json:"latitude"`
+		Longitude string `json:"longitude"`
 
-		Price int64 `json:"price"`
+		Price string `json:"price"`
 	}
 
 	var updateData UpdateData

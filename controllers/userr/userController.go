@@ -220,10 +220,10 @@ func GetAllUsers(c *fiber.Ctx) error {
 
 // query data
 func GetUserByID(c *fiber.Ctx) error {
-	id := c.Params("id")
+	provinceId := c.Params("id")
 	db := database.DB
 	var users []models.User
-	db.Where("province_id = ?", id).Where("role != ?", "Manager").Where("role != ?", "Support").Find(&users)
+	db.Where("province_id = ?", provinceId).Where("role = ?", "DR").Where("status = ?", true).Find(&users)
 
 	return c.JSON(fiber.Map{
 		"status":  "success",
