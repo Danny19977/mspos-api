@@ -2,13 +2,15 @@ module github.com/kgermando/mspos-api
 
 go 1.22.2
 
-require gorm.io/gorm v1.25.11
+require (
+	github.com/lib/pq v1.10.9
+	gorm.io/gorm v1.25.11
+)
 
 require (
 	github.com/andybalholm/brotli v1.0.5 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
 	github.com/go-playground/universal-translator v0.18.1 // indirect
-	github.com/go-sql-driver/mysql v1.7.0 // indirect
 	github.com/google/uuid v1.5.0 // indirect
 	github.com/jackc/pgpassfile v1.0.0 // indirect
 	github.com/jackc/pgservicefile v0.0.0-20221227161230-091c0ba34f0a // indirect
@@ -16,7 +18,6 @@ require (
 	github.com/jackc/puddle/v2 v2.2.1 // indirect
 	github.com/klauspost/compress v1.17.0 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lib/pq v1.10.9 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
@@ -26,6 +27,7 @@ require (
 	github.com/valyala/tcplisten v1.0.0 // indirect
 	golang.org/x/sync v0.8.0 // indirect
 	golang.org/x/sys v0.23.0 // indirect
+	gopkg.in/go-playground/assert.v1 v1.2.1 // indirect
 )
 
 require (
@@ -38,6 +40,5 @@ require (
 	github.com/subosito/gotenv v1.6.0
 	golang.org/x/crypto v0.26.0
 	golang.org/x/text v0.17.0 // indirect
-	gorm.io/driver/mysql v1.5.7
 	gorm.io/driver/postgres v1.5.9
 )
