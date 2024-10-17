@@ -40,7 +40,6 @@ func Register(c *fiber.Ctx) error {
 		AreaID:     nu.AreaID,
 		ProvinceID: nu.ProvinceID,
 		SupID:      nu.SupID,
-		// PosID:      nu.PosID,
 		Role:       nu.Role,
 		Permission: nu.Permission,
 		Image:      nu.Image,
@@ -115,7 +114,6 @@ func Login(c *fiber.Ctx) error {
 	if err != nil {
 		return c.SendStatus(fiber.StatusInternalServerError)
 	}
- 
 
 	cookie := fiber.Cookie{
 		Name:     "token",
@@ -124,7 +122,7 @@ func Login(c *fiber.Ctx) error {
 		HTTPOnly: true,
 		Secure:   true, 
 		SameSite: "none",
-		SessionOnly: true,
+		Path: "/",
 	}
 
 	c.Cookie(&cookie)
