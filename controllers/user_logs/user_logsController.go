@@ -101,7 +101,7 @@ func GetUserLogByID(c *fiber.Ctx) error {
 	db.
 		Joins("JOIN users ON user_logs.user_id=users.id").
 		Where("user_logs.user_id = ?", userId).
-		Where("fullname ILIKE ? OR name ILIKE ? OR title ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Where("users.fullname ILIKE ? OR user_logs.name ILIKE ? OR users.title ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").
 		Select(`
 		user_logs.id AS id,  
 		user_logs.name AS name, 

@@ -191,7 +191,7 @@ func GetPosByProvinceID(c *fiber.Ctx) error {
 	var dataList []models.Pos
 
 	var length int64
-	// var data []models.Pos
+	
 	db.Model(dataList).Where("province_id = ?", provinceId).Count(&length)
 
 	db.
