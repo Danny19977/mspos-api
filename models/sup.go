@@ -9,6 +9,8 @@ type Sup struct {
 	ProvinceID uint   `gorm:"not null" json:"province_id"`
 	AsmID      uint   `json:"asm_id"`
 	Signature  string `json:"signature"`
+	Province  string `json:"province"`
+	Asm       string `json:"asm"`
 }
 
 type SupPaginate struct {

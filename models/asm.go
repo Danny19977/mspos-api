@@ -9,6 +9,8 @@ type Asm struct {
 	ProvinceID uint   `gorm:"foreignKey:province_id" json:"province_id"`
 	Signature  string `json:"signature"`
 	Sups       []Sup
+
+	Province  string `json:"province"`
 }
 
 type AsmPaginate struct {

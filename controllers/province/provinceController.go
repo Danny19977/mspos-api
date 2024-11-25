@@ -1,6 +1,7 @@
 package province
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,56 +11,54 @@ import (
 
 // Paginate
 func GetPaginatedProvince(c *fiber.Ctx) error {
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
+	db := database.DB
 
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Province
-	var length int64
-	db := database.DB
-	db.Find(&u).Count(&length)
-
-	sql1 := `
-		SELECT "provinces"."id" AS id, "provinces"."name" AS name 
-		FROM provinces  
-		WHERE "provinces"."deleted_at" IS NULL
-		ORDER BY "provinces"."updated_at" DESC;
-	`
-	var dataList []models.ProvincePaginate
-	database.DB.Raw(sql1).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.ProvincePaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Province
+
+	var length int64
+	// var data []models.Province
+	db.Model(dataList).Count(&length)
+
+	db. 
+		Where("name ILIKE ?", "%"+search+"%").
+		Select(`
+		provinces.id AS id, 
+		provinces.name AS name 
+	`).
+		Offset(offset).
+		Limit(limit).
+		Order("provinces.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
-
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
-	}
-
+	} 
+ 
 	return c.JSON(fiber.Map{
 		"status":     "success",
 		"message":    "All provinces",

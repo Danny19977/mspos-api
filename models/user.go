@@ -19,8 +19,7 @@ type User struct {
 
 	AreaID     uint `gorm:"foreignKey:area_id" json:"area_id"`
 	ProvinceID uint `gorm:"foreignKey:province_id" json:"province_id"`
-	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"`
-	// PosID      uint `gorm:"foreignKey:pos_id" json:"pos_id"`
+	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"` 
 
 	Role       string `json:"role"`
 	Permission string `json:"permission"`
@@ -28,6 +27,10 @@ type User struct {
 	Status     bool   `json:"status"`
 	IsManager  bool   `json:"is_manager"`
 	Signature  string `json:"signature"`
+
+	Area       string    `json:"area"`
+	Province   string    `json:"province"`
+	Sup        string    `json:"sup"`
 
 	UserLogs []UserLogs
 }

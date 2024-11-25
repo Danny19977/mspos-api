@@ -13,6 +13,9 @@ type Area struct {
 	ProvinceID uint           `gorm:"foreignKey:province_id" json:"province_id"`
 	SupID      uint           `gorm:"foreignKey:sup_id" json:"sup_id"`
 	Signature  string         `json:"signature"`
+
+	Province  string `json:"province"`
+	Sup       string `json:"sup"` 
 }
 
 type AreaPaginate struct {

@@ -1,6 +1,7 @@
 package poss
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,74 +11,73 @@ import (
 
 // Paginate
 func GetPaginatedPos(c *fiber.Ctx) error {
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
+	db := database.DB
 
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Pos
-	var length int64
-	db := database.DB
-	db.Find(&u).Count(&length)
-
-	sql1 := `
-		SELECT "pos"."id" AS id, 
-		status AS status, 
-		"pos"."name" AS name, 
-		"pos"."shop" AS shop,
-		"pos"."manager" AS manager,  
-		"pos"."telephone" AS telephone,
-		"provinces"."name" AS province,   
-		"areas"."name" AS area,
-		"pos"."commune" AS commune,  
-		"pos"."quartier" AS quartier,  
-		"pos"."avenue" AS avenue,  
-		"pos"."reference" AS reference,
-		
-		"pos"."eparasol" AS eparasol,
-		"pos"."etable" AS etable,
-		"pos"."ekiosk" AS ekiosk,
-		"pos"."input_group_selector" AS input_group_selector,
-		"pos"."cparasol" AS cparasol,
-		"pos"."ctable" AS ctable,
-		"pos"."ckiosk" AS ckiosk 
-		FROM pos 
-			INNER JOIN provinces ON pos.province_id=provinces.id  
-			INNER JOIN areas ON pos.area_id=areas.id  
-			WHERE "pos"."deleted_at" IS NULL
-		ORDER BY "pos"."updated_at" DESC;
-	`
-	var dataList []models.PosPaginate
-	database.DB.Raw(sql1).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.PosPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Pos
+
+	var length int64
+	// var data []models.Pos
+	db.Model(dataList).Count(&length)
+
+	db.
+		Joins("JOIN provinces ON pos.province_id=provinces.id").
+		Joins("JOIN users ON pos.user_id=users.id").
+		Joins("JOIN areas ON pos.area_id=areas.id").
+		Where("users.fullname ILIKE ? OR pos.name ILIKE ? OR pos.shop ILIKE ? OR pos.manager ILIKE ? OR pos.telephone ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+			pos.id AS id, 
+			pos.status AS status, 
+			provinces.name AS province,
+			areas.name AS area,
+			users.fullname AS dr,
+			pos.name AS name, 
+			pos.shop AS shop,
+			pos.manager AS manager,  
+			pos.telephone AS telephone, 
+			pos.commune AS commune,  
+			pos.quartier AS quartier,  
+			pos.avenue AS avenue,  
+			pos.reference AS reference,
+			pos.eparasol AS eparasol,
+			pos.etable AS etable,
+			pos.ekiosk AS ekiosk,
+			pos.input_group_selector AS input_group_selector,
+			pos.cparasol AS cparasol,
+			pos.ctable AS ctable,
+			pos.ckiosk AS ckiosk
+		`).
+		Offset(offset).
+		Limit(limit).
+		Order("pos.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
 
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
 	}
 
@@ -89,84 +89,83 @@ func GetPaginatedPos(c *fiber.Ctx) error {
 	})
 }
 
-// query data dr
+// query data DR
 func GetPosPaginateByID(c *fiber.Ctx) error {
-	userId := c.Params("id")
+	db := database.DB
+	userId := c.Params("user_id")
 
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Pos
-	var length int64
-	db := database.DB
-	db.Where("user_id = ?", userId).Find(&u).Count(&length)
-
-	sql1 := `
-	SELECT "pos"."id" AS id, 
-		status AS status, 
-		"pos"."name" AS name, 
-		"pos"."shop" AS shop,
-		"pos"."manager" AS manager,  
-		"pos"."telephone" AS telephone,
-		"provinces"."name" AS province,   
-		"areas"."name" AS area,
-		"pos"."commune" AS commune,  
-		"pos"."quartier" AS quartier,  
-		"pos"."avenue" AS avenue,  
-		"pos"."reference" AS reference,
-		
-		"pos"."eparasol" AS eparasol,
-		"pos"."etable" AS etable,
-		"pos"."ekiosk" AS ekiosk,
-		"pos"."input_group_selector" AS input_group_selector,
-		"pos"."cparasol" AS cparasol,
-		"pos"."ctable" AS ctable,
-		"pos"."ckiosk" AS ckiosk 
-		FROM pos 
-			INNER JOIN provinces ON pos.province_id=provinces.id  
-			INNER JOIN areas ON pos.area_id=areas.id  
-			WHERE "pos"."deleted_at" IS NULL AND "pos"."user_id"=?
-		ORDER BY "pos"."updated_at" DESC;
-	`
-	var dataList []models.PosPaginate
-	database.DB.Raw(sql1, userId).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.PosPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Pos
+
+	var length int64
+	// var data []models.Pos
+	db.Model(dataList).Where("user_id = ?", userId).Count(&length)
+
+	db.
+		Joins("JOIN provinces ON pos.province_id=provinces.id").
+		Joins("JOIN users ON pos.user_id=users.id").
+		Joins("JOIN areas ON pos.area_id=areas.id").
+		Where("pos.user_id = ?", userId).
+		Where("users.fullname ILIKE ? OR pos.name ILIKE ? OR pos.shop ILIKE ? OR pos.manager ILIKE ? OR pos.telephone ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+		pos.id AS id,
+		pos.status AS status, 
+		provinces.name AS province,
+		areas.name AS area,
+		users.fullname AS dr,
+		pos.name AS name, 
+		pos.shop AS shop,
+		pos.manager AS manager,  
+		pos.telephone AS telephone, 
+		pos.commune AS commune,  
+		pos.quartier AS quartier,  
+		pos.avenue AS avenue,  
+		pos.reference AS reference,
+		pos.eparasol AS eparasol,
+		pos.etable AS etable,
+		pos.ekiosk AS ekiosk,
+		pos.input_group_selector AS input_group_selector,
+		pos.cparasol AS cparasol,
+		pos.ctable AS ctable,
+		pos.ckiosk AS ckiosk 
+	`).
+		Offset(offset).
+		Limit(limit).
+		Order("pos.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
 
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
 	}
 
 	return c.JSON(fiber.Map{
 		"status":     "success",
-		"message":    "All pos by dr",
+		"message":    "All pos by DR",
 		"data":       dataList,
 		"pagination": pagination,
 	})
@@ -174,76 +173,75 @@ func GetPosPaginateByID(c *fiber.Ctx) error {
 
 // query data province
 func GetPosByProvinceID(c *fiber.Ctx) error {
-	provinceId := c.Params("id")
+	db := database.DB
+	provinceId := c.Params("province_id")
 
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Pos
-	var length int64
-	db := database.DB
-	db.Where("province_id = ?", provinceId).Find(&u).Count(&length)
-
-	sql1 := `
-	SELECT "pos"."id" AS id, 
-		status AS status, 
-		"pos"."name" AS name, 
-		"pos"."shop" AS shop,
-		"pos"."manager" AS manager,  
-		"pos"."telephone" AS telephone,
-		"provinces"."name" AS province,   
-		"areas"."name" AS area,
-		"pos"."commune" AS commune,  
-		"pos"."quartier" AS quartier,  
-		"pos"."avenue" AS avenue,  
-		"pos"."reference" AS reference,
-		
-		"pos"."eparasol" AS eparasol,
-		"pos"."etable" AS etable,
-		"pos"."ekiosk" AS ekiosk,
-		"pos"."input_group_selector" AS input_group_selector,
-		"pos"."cparasol" AS cparasol,
-		"pos"."ctable" AS ctable,
-		"pos"."ckiosk" AS ckiosk 
-		FROM pos 
-			INNER JOIN provinces ON pos.province_id=provinces.id  
-			INNER JOIN areas ON pos.area_id=areas.id  
-			WHERE "pos"."deleted_at" IS NULL AND "pos"."province_id"=?
-		ORDER BY "pos"."updated_at" DESC;
-	`
-	var dataList []models.PosPaginate
-	database.DB.Raw(sql1, provinceId).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.PosPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Pos
+
+	var length int64
+	// var data []models.Pos
+	db.Model(dataList).Where("province_id = ?", provinceId).Count(&length)
+
+	db.
+		Joins("JOIN provinces ON pos.province_id=provinces.id").
+		Joins("JOIN users ON pos.user_id=users.id").
+		Joins("JOIN areas ON pos.area_id=areas.id").
+		Where("pos.province_id = ?", provinceId).
+		Where("users.fullname ILIKE ? OR pos.name ILIKE ? OR pos.shop ILIKE ? OR pos.manager ILIKE ? OR pos.telephone ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+			pos.id AS id, 
+			pos.status AS status, 
+			provinces.name AS province,
+			areas.name AS area,
+			users.fullname AS dr,
+			pos.name AS name, 
+			pos.shop AS shop,
+			pos.manager AS manager,  
+			pos.telephone AS telephone, 
+			pos.commune AS commune,  
+			pos.quartier AS quartier,  
+			pos.avenue AS avenue,  
+			pos.reference AS reference,
+			pos.eparasol AS eparasol,
+			pos.etable AS etable,
+			pos.ekiosk AS ekiosk,
+			pos.input_group_selector AS input_group_selector,
+			pos.cparasol AS cparasol,
+			pos.ctable AS ctable,
+			pos.ckiosk AS ckiosk 
+		`).
+		Offset(offset).
+		Limit(limit).
+		Order("pos.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
 
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
 	}
 
@@ -257,76 +255,75 @@ func GetPosByProvinceID(c *fiber.Ctx) error {
 
 // query data sup by area
 func GetPosBySupID(c *fiber.Ctx) error {
-	areaId := c.Params("id")
+	db := database.DB
+	areaId := c.Params("sup_id")
 
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Pos
-	var length int64
-	db := database.DB
-	db.Where("area_id = ?", areaId).Find(&u).Count(&length)
-
-	sql1 := `
-	SELECT "pos"."id" AS id, 
-		status AS status, 
-		"pos"."name" AS name, 
-		"pos"."shop" AS shop,
-		"pos"."manager" AS manager,  
-		"pos"."telephone" AS telephone,
-		"provinces"."name" AS province,   
-		"areas"."name" AS area,
-		"pos"."commune" AS commune,  
-		"pos"."quartier" AS quartier,  
-		"pos"."avenue" AS avenue,  
-		"pos"."reference" AS reference,
-		
-		"pos"."eparasol" AS eparasol,
-		"pos"."etable" AS etable,
-		"pos"."ekiosk" AS ekiosk,
-		"pos"."input_group_selector" AS input_group_selector,
-		"pos"."cparasol" AS cparasol,
-		"pos"."ctable" AS ctable,
-		"pos"."ckiosk" AS ckiosk 
-		FROM pos 
-			INNER JOIN provinces ON pos.province_id=provinces.id  
-			INNER JOIN areas ON pos.area_id=areas.id  
-			WHERE "pos"."deleted_at" IS NULL AND "pos"."area_id"=?
-		ORDER BY "pos"."updated_at" DESC;
-	`
-	var dataList []models.PosPaginate
-	database.DB.Raw(sql1, areaId).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.PosPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Pos
+
+	var length int64
+	// var data []models.Pos
+	db.Model(dataList).Where("area_id = ?", areaId).Count(&length)
+	db.
+		Joins("JOIN provinces ON pos.province_id=provinces.id").
+		Joins("JOIN users ON pos.user_id=users.id").
+		Joins("JOIN areas ON pos.area_id=areas.id").
+		Joins("JOIN pos ON pos.pos_id=pos.id").
+		Where("pos.area_id = ?", areaId).
+		Where("users.fullname ILIKE ? OR pos.name ILIKE ? OR pos.shop ILIKE ? OR pos.manager ILIKE ? OR pos.telephone ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+			pos.id AS id, 
+			pos.status AS status, 
+			provinces.name AS province,
+			areas.name AS area,
+			users.fullname AS dr,
+			pos.name AS name, 
+			pos.shop AS shop,
+			pos.manager AS manager,  
+			pos.telephone AS telephone, 
+			pos.commune AS commune,  
+			pos.quartier AS quartier,  
+			pos.avenue AS avenue,  
+			pos.reference AS reference,
+			pos.eparasol AS eparasol,
+			pos.etable AS etable,
+			pos.ekiosk AS ekiosk,
+			pos.input_group_selector AS input_group_selector,
+			pos.cparasol AS cparasol,
+			pos.ctable AS ctable,
+			pos.ckiosk AS ckiosk 
+		`).
+		Offset(offset).
+		Limit(limit).
+		Order("pos.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
 
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
 	}
 
@@ -335,6 +332,25 @@ func GetPosBySupID(c *fiber.Ctx) error {
 		"message":    "All pos by area",
 		"data":       dataList,
 		"pagination": pagination,
+	})
+}
+
+// Get all data by search
+func GetAllPosSearch(c *fiber.Ctx) error {
+	db := database.DB
+	search := c.Query("search", "")
+
+	var data []models.Pos
+	if search != "" {
+		db.Where("name ILIKE ? OR shop ILIKE ?", "%"+search+"%", "%"+search+"%").Find(&data)
+	} else {
+		db.Find(&data)
+	}
+
+	return c.JSON(fiber.Map{
+		"status":  "success",
+		"message": "All Pos",
+		"data":    data,
 	})
 }
 
