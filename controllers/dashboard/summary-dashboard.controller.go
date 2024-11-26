@@ -91,7 +91,6 @@ func TrackingVisitDRS(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")
 	end_date := c.Params("end_date")
 
-
 	sql1 := `
 		
 	SELECT "provinces"."name" AS province,
@@ -150,8 +149,7 @@ func TrackingVisitDRS(c *fiber.Ctx) error {
 	})
 }
 
-
-func SummaryChartBar(c *fiber.Ctx) error { 
+func SummaryChartBar(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")
 	end_date := c.Params("end_date")
 
@@ -181,8 +179,7 @@ func SummaryChartBar(c *fiber.Ctx) error {
 	})
 }
 
-
-func BetterDR(c *fiber.Ctx) error { 
+func BetterDR(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")
 	end_date := c.Params("end_date")
 
@@ -210,7 +207,7 @@ func BetterDR(c *fiber.Ctx) error {
 	})
 }
 
-func BetterSup(c *fiber.Ctx) error { 
+func BetterSup(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")
 	end_date := c.Params("end_date")
 
@@ -261,19 +258,19 @@ func StatusEquipement(c *fiber.Ctx) error {
 	})
 }
 
-
-func GoogleMaps(c *fiber.Ctx) error { 
+func GoogleMaps(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")
 	end_date := c.Params("end_date")
 
 	sql1 := `
 		SELECT  
-			latitude AS latitude,
-			longitude AS longitude
-		FROM pos_forms 
+			pos_forms.latitude AS latitude,
+			pos_forms.longitude AS longitude,
+			users.fullname AS name
+		FROM pos_forms
+		INNER JOIN users ON pos_forms.user_id=users.id
 		WHERE "pos_forms"."deleted_at" IS NULL AND latitude::FLOAT != 0 AND longitude::FLOAT != 0 AND
-		"pos_forms"."created_at" BETWEEN ? ::TIMESTAMP 
-			AND ? ::TIMESTAMP ;
+		"pos_forms"."created_at" BETWEEN ? ::TIMESTAMP AND ? ::TIMESTAMP;
 	`
 	var chartData []models.GoogleMap
 	database.DB.Raw(sql1, start_date, end_date).Scan(&chartData)
@@ -284,7 +281,6 @@ func GoogleMaps(c *fiber.Ctx) error {
 		"data":    chartData,
 	})
 }
-
 
 func PriceSale(c *fiber.Ctx) error {
 	start_date := c.Params("start_date")

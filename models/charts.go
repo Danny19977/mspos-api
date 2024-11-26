@@ -96,6 +96,7 @@ type StatusEquip struct {
 type GoogleMap struct {
 	Latitude string
 	Longitude string
+	Name string
 }
 
 type PriceChart struct {
