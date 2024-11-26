@@ -27,8 +27,7 @@ func GetPaginatedPos(c *fiber.Ctx) error {
 
 	var dataList []models.Pos
 
-	var length int64
-	// var data []models.Pos
+	var length int64 
 	db.Model(dataList).Count(&length)
 
 	db.
