@@ -122,6 +122,7 @@ func Login(c *fiber.Ctx) error {
 		HTTPOnly: true,
 		Secure:   true, 
 		SameSite: "none",
+		Domain: ".onrender.com",
 		Path: "/",
 	}
 
