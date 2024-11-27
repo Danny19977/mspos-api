@@ -1,6 +1,7 @@
 package manager
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,57 +11,53 @@ import (
 
 // Paginate
 func GetPaginatedManager(c *fiber.Ctx) error {
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	db := database.DB
+ 
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.Manager
-	var length int64
-	db := database.DB
-	db.Find(&u).Count(&length)
-
-	sql1 := `
-		SELECT "managers"."id" AS id,  
-		"managers"."name" AS name
-		FROM managers   
-		WHERE "managers"."deleted_at" IS NULL
-		ORDER BY "managers"."updated_at" DESC;
-	`
-	var dataList []models.ManagerPaginate
-	database.DB.Raw(sql1).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.ManagerPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.Manager
+
+	var length int64
+	// var data []models.Manager
+	db.Model(dataList).Count(&length) 
+	db. 
+		Where("name ILIKE ?", "%"+search+"%").
+		Select(`
+		managers.id AS id, 
+		managers.name AS name 
+	`).
+		Offset(offset).
+		Limit(limit).
+		Order("managers.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
-
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
 		"length":      length,
-	}
-
+	} 
+ 
 	return c.JSON(fiber.Map{
 		"status":     "success",
 		"message":    "All PosForms",
@@ -106,7 +103,7 @@ func GetManager(c *fiber.Ctx) error {
 }
 
 // Create data
-func Createmanager(c *fiber.Ctx) error {
+func CreateManager(c *fiber.Ctx) error {
 	p := &models.Manager{}
 
 	if err := c.BodyParser(&p); err != nil {
@@ -176,7 +173,7 @@ func DeleteManager(c *fiber.Ctx) error {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
-				"message": "No Province name found",
+				"message": "No Manager name found",
 				"data":    nil,
 			},
 		)
@@ -187,7 +184,7 @@ func DeleteManager(c *fiber.Ctx) error {
 	return c.JSON(
 		fiber.Map{
 			"status":  "success",
-			"message": "Province deleted success",
+			"message": "Manager deleted success",
 			"data":    nil,
 		},
 	)

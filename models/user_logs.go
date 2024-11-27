@@ -14,6 +14,10 @@ type UserLogs struct {
 	Action      string `gorm:"not null" json:"action"`
 	Description string `gorm:"not null" json:"description"`
 	Signature   string `json:"signature"`
+
+	Fullname    string    `json:"fullname"`
+	Title       string    `json:"title"`
+	CreatedAt   time.Time `json:"created_at"`
 }
 
 type UserLogPaginate struct {

@@ -43,6 +43,12 @@ type PosForm struct {
 	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"`
 	PosID      uint `gorm:"foreignKey:pos_id" json:"pos_id"`
 
+	Province string `json:"province"`
+	User     string `json:"user"`
+	Area     string `json:"area"`
+	Sup      string `json:"sup"`
+	Pos      string `json:"pos"`
+
 	Latitude  string `json:"latitude"`
 	Longitude string `json:"longitude"`
 

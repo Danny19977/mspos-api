@@ -1,6 +1,7 @@
 package userlogs
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -10,61 +11,126 @@ import (
 
 // Paginate
 func GetPaginatedUserLogs(c *fiber.Ctx) error {
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
+	db := database.DB
 
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
+	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
 		page = 1 // Default page number
 	}
-	offset := (page - 1) * pageSize
-
-	var u []models.UserLogs
-	var length int64
-	db := database.DB
-	db.Find(&u).Count(&length)
-
-	sql1 := `
-		SELECT "user_logs"."id" AS id,  
-		"user_logs"."name" AS name, 
-		"user_logs"."action" AS action,
-		"user_logs"."description" AS description,
-		"user_logs"."created_at" AS created_at,
-		"users"."id" AS user_id,
-		"users"."fullname" AS fullname,
-		"users"."title" AS title
-		FROM user_logs 
-			INNER JOIN users ON user_logs.user_id=users.id   
-			WHERE "user_logs"."deleted_at" IS NULL
-		ORDER BY "user_logs"."updated_at" DESC;
-	`
-	var dataList []models.UserLogPaginate
-	database.DB.Raw(sql1).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.UserLogPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
 	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.UserLogs
+
+	var length int64
+	var data []models.UserLogs
+	db.Model(data).Count(&length)
+
+	db.
+		Joins("JOIN users ON user_logs.user_id=users.id").
+		Where("users.fullname ILIKE ? OR user_logs.name ILIKE ? OR users.title ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+		user_logs.id AS id,  
+		user_logs.name AS name, 
+		user_logs.action AS action,
+		user_logs.description AS description,
+		user_logs.created_at AS created_at,
+		users.id AS user_id,
+		users.fullname AS fullname,
+		users.title AS title
+	`).
+		Offset(offset).
+		Limit(limit).
+		Order("user_logs.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
 	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
 		totalPages++
 	}
-
-	// Create pagination metadata (adjust fields as needed)
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
 		"page":        page,
-		"page_size":   pageSize,
+		"page_size":   limit,
+		"length":      length,
+	}
+
+	return c.JSON(fiber.Map{
+		"status":     "success",
+		"message":    "All UserLogs",
+		"data":       dataList,
+		"pagination": pagination,
+	})
+}
+
+// query data
+func GetUserLogByID(c *fiber.Ctx) error {
+	db := database.DB
+	userId := c.Params("user_id")
+
+	
+	page, err := strconv.Atoi(c.Query("page", "1"))
+	if err != nil || page <= 0 {
+		page = 1 // Default page number
+	}
+	limit, err := strconv.Atoi(c.Query("limit", "15"))
+	if err != nil || limit <= 0 {
+		limit = 15
+	}
+	offset := (page - 1) * limit
+
+	search := c.Query("search", "")
+
+	var dataList []models.UserLogs
+
+	var length int64
+	var data []models.UserLogs
+	db.Model(data).Where("user_id = ?", userId).Count(&length) 
+
+	db.
+		Joins("JOIN users ON user_logs.user_id=users.id").
+		Where("user_logs.user_id = ?", userId).
+		Where("users.fullname ILIKE ? OR user_logs.name ILIKE ? OR users.title ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").
+		Select(`
+		user_logs.id AS id,  
+		user_logs.name AS name, 
+		user_logs.action AS action,
+		user_logs.description AS description,
+		user_logs.created_at AS created_at,
+		users.id AS user_id,
+		users.fullname AS fullname,
+		users.title AS title
+	`).
+		Offset(offset).
+		Limit(limit).
+		Order("user_logs.updated_at DESC").
+		Find(&dataList)
+
+	if err != nil {
+		fmt.Println("error s'est produite: ", err)
+		return c.Status(500).SendString(err.Error())
+	}
+
+	// Calculate total number of pages
+	totalPages := len(dataList) / limit
+	if remainder := len(dataList) % limit; remainder > 0 {
+		totalPages++
+	}
+	pagination := map[string]interface{}{
+		"total_pages": totalPages,
+		"page":        page,
+		"page_size":   limit,
 		"length":      length,
 	}
 
@@ -89,74 +155,6 @@ func GetUserLogs(c *fiber.Ctx) error {
 	})
 }
 
-// query data
-func GetUserLogByID(c *fiber.Ctx) error {
-	userId := c.Params("id")
-
-	pageSizeStr := c.Query("page_size")
-	pageStr := c.Query("page") // CurrentPage
-
-	pageSize, err := strconv.Atoi(pageSizeStr)
-	if err != nil || pageSize <= 0 {
-		pageSize = 15
-	}
-	page, err := strconv.Atoi(pageStr)
-	if err != nil || page <= 0 {
-		page = 1 // Default page number
-	}
-	offset := (page - 1) * pageSize
-
-	var u []models.UserLogs
-	var length int64
-	db := database.DB
-	db.Where("user_id = ?", userId).Find(&u).Count(&length)
-
-	sql1 := `
-		SELECT "user_logs"."id" AS id,  
-		"user_logs"."name" AS name, 
-		"user_logs"."action" AS action,
-		"user_logs"."description" AS description,
-		"users"."id" AS user_id,
-		"users"."fullname" AS fullname,
-		"users"."title" AS title
-		FROM user_logs 
-			INNER JOIN users ON user_logs.user_id=users.id   
-			WHERE "user_logs"."deleted_at" IS NULL AND "user_logs"."user_id"=?
-			ORDER BY "user_logs"."updated_at" DESC;
-	`
-	var dataList []models.UserLogPaginate
-	database.DB.Raw(sql1, userId).Scan(&dataList)
-
-	if offset >= len(dataList) {
-		dataList = []models.UserLogPaginate{} // Empty slice
-	} else {
-		end := offset + pageSize
-		if end > len(dataList) {
-			end = len(dataList)
-		}
-		dataList = dataList[offset:end]
-	}
-	// Calculate total number of pages
-	totalPages := len(dataList) / pageSize
-	if remainder := len(dataList) % pageSize; remainder > 0 {
-		totalPages++
-	}
-
-	// Create pagination metadata (adjust fields as needed)
-	pagination := map[string]interface{}{
-		"total_pages": totalPages,
-		"page":        page,
-		"page_size":   pageSize,
-		"length":      length,
-	}
-
-	return c.JSON(fiber.Map{
-		"status":     "success",
-		"message":    "All UserLogs",
-		"data":       dataList,
-		"pagination": pagination,
-	})
-}
 
 // Get one data
 func GetUserLog(c *fiber.Ctx) error {
