@@ -144,7 +144,7 @@ func GetPosformByID(c *fiber.Ctx) error {
 			yes AS yes, 
 			time AS time, 
 			comment AS comment,  
-			provinces."name AS province, 
+			provinces.name AS province, 
 			sups.name AS sup, 
 			users.fullname AS user, 
 			areas.name AS area,
@@ -213,7 +213,7 @@ func GetPosformByProvinceID(c *fiber.Ctx) error {
 		Where("pos_forms.province_id = ?", provinceId).
 		Where("users.fullname ILIKE ? OR provinces.name ILIKE ?", "%"+search+"%", "%"+search+"%").
 		Select(`
-			pos_forms.id AS id, 
+			pos_forms.id AS id,
 			id_unique AS id_unique, 
 			eq AS eq, 
 			sold AS sold, 
@@ -299,8 +299,8 @@ func GetPosformBySupID(c *fiber.Ctx) error {
 		Where("pos_forms.area_id = ?", areaId).
 		Where("users.fullname ILIKE ? OR provinces.name ILIKE ?", "%"+search+"%", "%"+search+"%").
 		Select(`
-			pos_forms.id AS id, 
-			id_unique AS id_unique, 
+			pos_forms.id AS id,
+			id_unique AS id_unique,
 			eq AS eq, 
 			sold AS sold, 
 			dhl AS dhl, 
