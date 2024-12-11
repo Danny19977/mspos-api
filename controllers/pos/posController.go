@@ -278,7 +278,6 @@ func GetPosBySupID(c *fiber.Ctx) error {
 		Joins("JOIN provinces ON pos.province_id=provinces.id").
 		Joins("JOIN users ON pos.user_id=users.id").
 		Joins("JOIN areas ON pos.area_id=areas.id").
-		Joins("JOIN pos ON pos.pos_id=pos.id").
 		Where("pos.area_id = ?", areaId).
 		Where("users.fullname ILIKE ? OR pos.name ILIKE ? OR pos.shop ILIKE ? OR pos.manager ILIKE ? OR pos.telephone ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%", "%"+search+"%").
 		Select(`
