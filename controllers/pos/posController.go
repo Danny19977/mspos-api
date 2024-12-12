@@ -270,9 +270,8 @@ func GetPosBySupID(c *fiber.Ctx) error {
 	search := c.Query("search", "")
 
 	var dataList []models.Pos
-
+ 
 	var length int64
-	// var data []models.Pos
 	db.Model(dataList).Where("area_id = ?", areaId).Count(&length)
 	db.
 		Joins("JOIN provinces ON pos.province_id=provinces.id").
