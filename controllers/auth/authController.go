@@ -116,14 +116,14 @@ func Login(c *fiber.Ctx) error {
 	}
 
 	cookie := fiber.Cookie{
-		Name:     "token",
-		Value:    token,
-		Path: "/",
-		// Domain: "*.onrender.com",
+		Name:   "token",
+		Value:  token,
+		Path:   "/",
+		Domain: ".onrender.com",
 		// Domain: "localhost",
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
 		HTTPOnly: true,
-		Secure:   true, 
+		Secure:   true,
 		SameSite: "none",
 		// SessionOnly: true,
 	}
@@ -148,15 +148,15 @@ func AuthUser(c *fiber.Ctx) error {
 	database.DB.Where("id = ?", userId).First(&u)
 
 	r := &models.UserResponse{
-		Id:       u.ID,
-		Fullname: u.Fullname,
-		Email:    u.Email,
-		Title:    u.Title,
-		Phone:    u.Phone,
-		Role:     u.Role,
-		Area:     u.AreaID,
-		Province: u.ProvinceID,
-		Sup:      u.SupID, 
+		Id:         u.ID,
+		Fullname:   u.Fullname,
+		Email:      u.Email,
+		Title:      u.Title,
+		Phone:      u.Phone,
+		Role:       u.Role,
+		Area:       u.AreaID,
+		Province:   u.ProvinceID,
+		Sup:        u.SupID,
 		Permission: u.Permission,
 		Status:     u.Status,
 		CreatedAt:  u.CreatedAt,
@@ -185,10 +185,10 @@ func Logout(c *fiber.Ctx) error {
 // User bioprofile
 func UpdateInfo(c *fiber.Ctx) error {
 	type UpdateDataInput struct {
-		Fullname   string `json:"fullname"`
-		Email      string `json:"email"`
-		Phone      string `json:"phone"`
-		Signature  string `json:"signature"`
+		Fullname  string `json:"fullname"`
+		Email     string `json:"email"`
+		Phone     string `json:"phone"`
+		Signature string `json:"signature"`
 	}
 	var updateData UpdateDataInput
 
@@ -244,12 +244,11 @@ func ChangePassword(c *fiber.Ctx) error {
 
 	cookie := c.Cookies("token")
 
-	userId, _ := utils.VerifyJwt(cookie) 
+	userId, _ := utils.VerifyJwt(cookie)
 
 	user := new(models.User)
 
 	database.DB.Where("id = ?", userId).First(&user)
-
 
 	if err := user.ComparePassword(updateData.OldPassword); err != nil {
 		c.Status(400)
@@ -263,7 +262,7 @@ func ChangePassword(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
 			"message": "passwords do not match",
 		})
-	} 
+	}
 
 	p, err := utils.HashPassword(updateData.Password)
 	if err != nil {
@@ -273,7 +272,7 @@ func ChangePassword(c *fiber.Ctx) error {
 	db := database.DB
 
 	db.First(&user, user.ID)
-	user.Password = p 
+	user.Password = p
 
 	db.Save(&user)
 
