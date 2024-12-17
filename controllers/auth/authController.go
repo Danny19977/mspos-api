@@ -118,8 +118,8 @@ func Login(c *fiber.Ctx) error {
 	cookie := fiber.Cookie{
 		Name:   "token",
 		Value:  token,
-		// Path:   "/",
-		Domain: ".onrender.com",
+		Path:   "/",
+		Domain: "onrender.com",
 		// Domain: "localhost",
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
 		HTTPOnly: true,
