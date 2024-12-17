@@ -55,7 +55,8 @@ func GetPaginatedPos(c *fiber.Ctx) error {
 			pos.input_group_selector AS input_group_selector,
 			pos.cparasol AS cparasol,
 			pos.ctable AS ctable,
-			pos.ckiosk AS ckiosk
+			pos.ckiosk AS ckiosk,
+			pos.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
@@ -137,7 +138,8 @@ func GetPosPaginateByID(c *fiber.Ctx) error {
 		pos.input_group_selector AS input_group_selector,
 		pos.cparasol AS cparasol,
 		pos.ctable AS ctable,
-		pos.ckiosk AS ckiosk 
+		pos.ckiosk AS ckiosk,
+		pos.created_at
 	`).
 		Offset(offset).
 		Limit(limit).
@@ -219,7 +221,8 @@ func GetPosByProvinceID(c *fiber.Ctx) error {
 			pos.input_group_selector AS input_group_selector,
 			pos.cparasol AS cparasol,
 			pos.ctable AS ctable,
-			pos.ckiosk AS ckiosk 
+			pos.ckiosk AS ckiosk,
+			pos.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
@@ -299,7 +302,8 @@ func GetPosBySupID(c *fiber.Ctx) error {
 			pos.input_group_selector AS input_group_selector,
 			pos.cparasol AS cparasol,
 			pos.ctable AS ctable,
-			pos.ckiosk AS ckiosk 
+			pos.ckiosk AS ckiosk,
+			pos.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
