@@ -119,7 +119,7 @@ func Login(c *fiber.Ctx) error {
 		Name:   "token",
 		Value:  token,
 		Path:   "/",
-		Domain: ".render.com",
+		// Domain: ".render.com",
 		// Domain: "localhost",
 		Expires:  time.Now().Add(time.Hour * 24), //1 day ,
 		HTTPOnly: true,
