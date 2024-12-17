@@ -61,7 +61,8 @@ func GetPaginatedPosForm(c *fiber.Ctx) error {
 		sups.name AS sup, 
 		users.fullname AS user, 
 		areas.name AS area,
-		pos.shop AS pos
+		pos.shop AS pos,
+		pos_forms.created_at
 	`).
 		Offset(offset).
 		Limit(limit).
@@ -148,7 +149,8 @@ func GetPosformByID(c *fiber.Ctx) error {
 			sups.name AS sup, 
 			users.fullname AS user, 
 			areas.name AS area,
-			pos.shop AS pos
+			pos.shop AS pos,
+			pos_forms.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
@@ -235,7 +237,8 @@ func GetPosformByProvinceID(c *fiber.Ctx) error {
 			sups.name AS sup, 
 			users.fullname AS user, 
 			areas.name AS area,
-			pos.shop AS pos
+			pos.shop AS pos,
+			pos_forms.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
@@ -321,7 +324,8 @@ func GetPosformBySupID(c *fiber.Ctx) error {
 			sups.name AS sup, 
 			users.fullname AS user, 
 			areas.name AS area,
-			pos.shop AS pos
+			pos.shop AS pos,
+			pos_forms.created_at
 		`).
 		Offset(offset).
 		Limit(limit).
