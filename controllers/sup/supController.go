@@ -170,7 +170,7 @@ func GetSup(c *fiber.Ctx) error {
 	db := database.DB
 	var sup models.Sup
 	db.Find(&sup, id)
-	if sup.Name == "" {
+	if sup.ProvinceID == 0 {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
@@ -234,7 +234,6 @@ func UpdateSup(c *fiber.Ctx) error {
 	sup := new(models.Sup)
 
 	db.First(&sup, id)
-	sup.Name = updateData.Name
 	sup.ProvinceID = updateData.ProvinceID
 	sup.AsmID = updateData.AsmID
 	sup.Signature = updateData.Signature
@@ -259,7 +258,7 @@ func DeleteSup(c *fiber.Ctx) error {
 
 	var sup models.Sup
 	db.First(&sup, id)
-	if sup.Name == "" {
+	if sup.ProvinceID == 0 {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",

@@ -29,24 +29,25 @@ func GetPaginatedUserLogs(c *fiber.Ctx) error {
 
 	var length int64
 	var data []models.UserLogs
-	db.Model(data).Count(&length)
+	db.Model(data).Count(&length) 
 
 	db.
 		Joins("JOIN users ON user_logs.user_id=users.id").
 		Where("users.fullname ILIKE ? OR user_logs.name ILIKE ? OR users.title ILIKE ?", "%"+search+"%", "%"+search+"%", "%"+search+"%").
-		Select(`
-		user_logs.id AS id,  
-		user_logs.name AS name, 
-		user_logs.action AS action,
-		user_logs.description AS description,
-		user_logs.created_at AS created_at,
-		users.id AS user_id,
-		users.fullname AS fullname,
-		users.title AS title
-	`).
+	// 	Select(`
+	// 	user_logs.id AS id,  
+	// 	user_logs.name AS name, 
+	// 	user_logs.action AS action,
+	// 	user_logs.description AS description,
+	// 	user_logs.created_at AS created_at,
+	// 	users.id AS user_id,
+	// 	users.fullname AS fullname,
+	// 	users.title AS title
+	// `).
 		Offset(offset).
 		Limit(limit).
 		Order("user_logs.updated_at DESC").
+		Preload("User").
 		Find(&dataList)
 
 	if err != nil {

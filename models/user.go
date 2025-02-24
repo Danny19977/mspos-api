@@ -17,9 +17,14 @@ type User struct {
 	Password        string `json:"password" validate:"required"`
 	PasswordConfirm string `json:"password_confirm" gorm:"-"`
 
-	AreaID     uint `gorm:"foreignKey:area_id" json:"area_id"`
-	ProvinceID uint `gorm:"foreignKey:province_id" json:"province_id"`
-	SupID      uint `gorm:"foreignKey:sup_id" json:"sup_id"` 
+	CountryID  uint     `json:"country_id"`
+	Country    Country  `gorm:"foreignKey:CountryID"`
+	ProvinceID uint     `json:"province_id"`
+	Province   Province `gorm:"foreignKey:ProvinceID"`
+	AreaID     uint     `json:"area_id"`
+	Area       Area     `gorm:"foreignKey:AreaID"`
+	SubAreaID  uint     `json:"subArea_id"`
+	Subarea    SubArea  `gorm:"foreignKey:SubAreaID"`
 
 	Role       string `json:"role"`
 	Permission string `json:"permission"`
@@ -28,11 +33,13 @@ type User struct {
 	IsManager  bool   `json:"is_manager"`
 	Signature  string `json:"signature"`
 
-	Area       string    `json:"area"`
-	Province   string    `json:"province"`
-	Sup        string    `json:"sup"`
+	Cyclo   []Cyclo   `gorm:"foreignKey:UserID"`
+	Dr      []Dr      `gorm:"foreignKey:UserID"`
+	Sup     []Sup     `gorm:"foreignKey:UserID"`
+	Asm     []Asm     `gorm:"foreignKey:UserID"`
+	Manager []Manager `gorm:"foreignKey:UserID"`
 
-	UserLogs []UserLogs
+	UserLogs []UserLogs `gorm:"foreignKey:UserID"`
 }
 
 type UserResponse struct {

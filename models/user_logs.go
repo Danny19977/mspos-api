@@ -10,14 +10,15 @@ type UserLogs struct {
 	gorm.Model
 
 	Name        string `gorm:"not null" json:"name"`
-	UserID      uint   `gorm:"foreignKey:user_id" json:"user_id"`
+	UserID      uint   `json:"user_id"`
+	User        User   `gorm:"foreignKey:UserID"`
 	Action      string `gorm:"not null" json:"action"`
 	Description string `gorm:"not null" json:"description"`
 	Signature   string `json:"signature"`
 
-	Fullname    string    `json:"fullname"`
-	Title       string    `json:"title"`
-	CreatedAt   time.Time `json:"created_at"`
+	// Fullname  string    `json:"fullname"`
+	// Title     string    `json:"title"`
+	// CreatedAt time.Time `json:"created_at"`
 }
 
 type UserLogPaginate struct {

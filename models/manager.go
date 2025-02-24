@@ -6,8 +6,12 @@ import "gorm.io/gorm"
 type Manager struct {
 	gorm.Model
 
-	Name  string `gorm:"not null" json:"name"`
-	Signature    string `json:"signature"`
+	Title     string  `json:"title"` // Example Head of Sales, Support, Manager, etc
+	CountryID uint    `json:"country_id"`
+	Country   Country `gorm:"foreignKey:CountryID"`
+	UserID    uint    `json:"user_id"`
+	User      User    `gorm:"foreignKey:HosID"`
+	Signature string  `json:"signature"`
 }
 
 type ManagerPaginate struct { 

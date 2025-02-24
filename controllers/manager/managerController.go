@@ -84,7 +84,7 @@ func GetManager(c *fiber.Ctx) error {
 	db := database.DB
 	var manager models.Manager
 	db.Find(&manager, id)
-	if manager.Name == "" {
+	if manager.Title == "" {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
@@ -146,7 +146,7 @@ func UpdateManager(c *fiber.Ctx) error {
 	manager := new(models.Manager)
 
 	db.First(&manager, id)
-	manager.Name = updateData.Name
+	manager.Title = updateData.Name
 	manager.Signature = updateData.Signature
 
 	db.Save(&manager)
@@ -169,7 +169,7 @@ func DeleteManager(c *fiber.Ctx) error {
 
 	var manager models.Manager
 	db.First(&manager, id)
-	if manager.Name == "" {
+	if manager.Title == "" {
 		return c.Status(404).JSON(
 			fiber.Map{
 				"status":  "error",
