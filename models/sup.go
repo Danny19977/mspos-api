@@ -5,12 +5,22 @@ import "gorm.io/gorm"
 type Sup struct {
 	gorm.Model
 
-	Name       string `gorm:"not null" json:"name"`
-	ProvinceID uint   `gorm:"not null" json:"province_id"`
-	AsmID      uint   `json:"asm_id"`
-	Signature  string `json:"signature"`
-	Province  string `json:"province"`
-	Asm       string `json:"asm"`
+	CountryID  uint     `json:"country_id"`
+	Country    Country  `gorm:"foreignKey:CountryID"`
+	ProvinceID uint     `json:"province_id"`
+	Province   Province `gorm:"foreignKey:ProvinceID"`
+	AsmID      uint     `json:"asm_id"`
+	Asms       Asm      `gorm:"foreignKey:AsmID"`
+	Signature  string   `json:"signature"`
+	AreaID     uint     `json:"area_id"`
+	Area       Area     `gorm:"foreignKey:AreaID"`
+
+	UserID uint `json:"user_id"` 
+	User   User `gorm:"foreignKey:UserID"`
+	
+	Dr      []Dr      `gorm:"foreignKey:SupID"`
+	Cyclo   []Cyclo   `gorm:"foreignKey:SupID"`
+	Subarea []SubArea `gorm:"foreignKey:SupID"`
 }
 
 type SupPaginate struct {

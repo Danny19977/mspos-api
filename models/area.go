@@ -10,12 +10,12 @@ type Area struct {
 
 	Name       string         `gorm:"not null" json:"name"`
 	Commune    pq.StringArray `gorm:"type:text[];null" json:"commune"`
-	ProvinceID uint           `gorm:"foreignKey:province_id" json:"province_id"`
-	SupID      uint           `gorm:"foreignKey:sup_id" json:"sup_id"`
+	CountryID  uint           `json:"country_id"`
+	Country    Country        `gorm:"foreignKey:CountryID"`
+	ProvinceID uint           `json:"province_id"`
+	Province   Province       `gorm:"foreignKey:ProvinceID"`
 	Signature  string         `json:"signature"`
-
-	Province  string `json:"province"`
-	Sup       string `json:"sup"` 
+	Sup        []Sup          `gorm:"foreignKey:AreaID"`
 }
 
 type AreaPaginate struct {

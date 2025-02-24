@@ -50,6 +50,11 @@ func Connect() {
 		&models.PosForm{},
 		&models.UserLogs{},
 		&models.Sup{},
+		&models.Brand{},
+		&models.Country{},
+		&models.PosFormItems{},
+		&models.SubArea{},
+		&models.RoutePlan{},
 	)
 
 }

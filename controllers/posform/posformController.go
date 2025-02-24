@@ -32,42 +32,46 @@ func GetPaginatedPosForm(c *fiber.Ctx) error {
 	db.Model(data).Count(&length)
 
 	db.
-		Joins("JOIN provinces ON pos_forms.province_id=provinces.id").
-		Joins("JOIN sups ON pos_forms.sup_id=sups.id").
-		Joins("JOIN users ON pos_forms.user_id=users.id").
-		Joins("JOIN areas ON pos_forms.area_id=areas.id").
-		Joins("JOIN pos ON pos_forms.pos_id=pos.id").
-		Where("users.fullname ILIKE ? OR provinces.name ILIKE ?", "%"+search+"%", "%"+search+"%").
-		Select(`
-		pos_forms.id AS id, 
-		id_unique AS id_unique, 
-		eq AS eq, 
-		sold AS sold, 
-		dhl AS dhl, 
-		ar AS ar, 
-		sbl AS sbl, 
-		pmf AS pmf, 
-		pmm AS pmm, 
-		ticket AS ticket, 
-		mtc AS mtc, 
-		ws AS ws, 
-		mast AS mast, 
-		oris AS oris, 
-		elite AS elite, 
-		yes AS yes, 
-		time AS time, 
-		comment AS comment,  
-		provinces.name AS province, 
-		sups.name AS sup, 
-		users.fullname AS user, 
-		areas.name AS area,
-		pos.shop AS pos,
-		pos_forms.created_at
-	`).
+	Where("name ILIKE ?", "%"+search+"%").
+
+	// db.
+	// 	Joins("JOIN provinces ON pos_forms.province_id=provinces.id").
+	// 	Joins("JOIN sups ON pos_forms.sup_id=sups.id").
+	// 	Joins("JOIN users ON pos_forms.user_id=users.id").
+	// 	Joins("JOIN areas ON pos_forms.area_id=areas.id").
+	// 	Joins("JOIN pos ON pos_forms.pos_id=pos.id").
+	// 	Where("users.fullname ILIKE ? OR provinces.name ILIKE ?", "%"+search+"%", "%"+search+"%").
+	// 	Select(`
+	// 	pos_forms.id AS id, 
+	// 	id_unique AS id_unique, 
+	// 	eq AS eq, 
+	// 	sold AS sold, 
+	// 	dhl AS dhl, 
+	// 	ar AS ar, 
+	// 	sbl AS sbl, 
+	// 	pmf AS pmf, 
+	// 	pmm AS pmm, 
+	// 	ticket AS ticket, 
+	// 	mtc AS mtc, 
+	// 	ws AS ws, 
+	// 	mast AS mast, 
+	// 	oris AS oris, 
+	// 	elite AS elite, 
+	// 	yes AS yes, 
+	// 	time AS time, 
+	// 	comment AS comment,  
+	// 	provinces.name AS province, 
+	// 	sups.name AS sup, 
+	// 	users.fullname AS user, 
+	// 	areas.name AS area,
+	// 	pos.shop AS pos,
+	// 	pos_forms.created_at
+	// `).
 		Offset(offset).
 		Limit(limit).
 		Order("pos_forms.updated_at DESC").
 		Find(&dataList)
+		
 
 	if err != nil {
 		fmt.Println("error s'est produite: ", err)
@@ -471,35 +475,35 @@ func UpdatePosform(c *fiber.Ctx) error {
 	posform := new(models.PosForm)
 
 	db.First(&posform, id)
-	posform.Eq = updateData.Eq
-	posform.Eq1 = updateData.Eq1
-	posform.Sold = updateData.Sold
-	posform.Dhl = updateData.Dhl
-	posform.Dhl1 = updateData.Dhl1
-	posform.Ar = updateData.Ar
-	posform.Ar1 = updateData.Ar1
-	posform.Sbl = updateData.Sbl
-	posform.Sbl1 = updateData.Sbl1
-	posform.Pmf = updateData.Pmf
-	posform.Pmf1 = updateData.Pmf1
-	posform.Pmm = updateData.Pmm
-	posform.Pmm1 = updateData.Pmm1
-	posform.Ticket = updateData.Ticket
-	posform.Ticket1 = updateData.Ticket1
-	posform.Mtc = updateData.Mtc
-	posform.Mtc1 = updateData.Mtc1
-	posform.Ws = updateData.Ws
-	posform.Ws1 = updateData.Ws1
-	posform.Mast = updateData.Mast
-	posform.Mast1 = updateData.Mast1
-	posform.Oris = updateData.Oris
-	posform.Oris1 = updateData.Oris1
-	posform.Elite = updateData.Elite
-	posform.Elite1 = updateData.Elite1
-	posform.Yes = updateData.Yes
-	posform.Yes1 = updateData.Yes1
-	posform.Time = updateData.Time
-	posform.Time1 = updateData.Time1
+	// posform.Eq = updateData.Eq
+	// posform.Eq1 = updateData.Eq1
+	// posform.Sold = updateData.Sold
+	// posform.Dhl = updateData.Dhl
+	// posform.Dhl1 = updateData.Dhl1
+	// posform.Ar = updateData.Ar
+	// posform.Ar1 = updateData.Ar1
+	// posform.Sbl = updateData.Sbl
+	// posform.Sbl1 = updateData.Sbl1
+	// posform.Pmf = updateData.Pmf
+	// posform.Pmf1 = updateData.Pmf1
+	// posform.Pmm = updateData.Pmm
+	// posform.Pmm1 = updateData.Pmm1
+	// posform.Ticket = updateData.Ticket
+	// posform.Ticket1 = updateData.Ticket1
+	// posform.Mtc = updateData.Mtc
+	// posform.Mtc1 = updateData.Mtc1
+	// posform.Ws = updateData.Ws
+	// posform.Ws1 = updateData.Ws1
+	// posform.Mast = updateData.Mast
+	// posform.Mast1 = updateData.Mast1
+	// posform.Oris = updateData.Oris
+	// posform.Oris1 = updateData.Oris1
+	// posform.Elite = updateData.Elite
+	// posform.Elite1 = updateData.Elite1
+	// posform.Yes = updateData.Yes
+	// posform.Yes1 = updateData.Yes1
+	// posform.Time = updateData.Time
+	// posform.Time1 = updateData.Time1
 	posform.Comment = updateData.Comment
 	posform.Signature = updateData.Signature
 

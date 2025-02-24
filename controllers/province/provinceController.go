@@ -39,6 +39,7 @@ func GetPaginatedProvince(c *fiber.Ctx) error {
 	`).
 		Offset(offset).
 		Limit(limit).
+		Preload("Brand").
 		Order("provinces.updated_at DESC").
 		Find(&dataList)
 

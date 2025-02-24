@@ -131,6 +131,7 @@ func UpdateAsm(c *fiber.Ctx) error {
 
 	type UpdateData struct {
 		Name       string `json:"name"`
+		CountryID uint   `json:"country_id"`
 		ProvinceID uint   `json:"province_id"`
 		Signature  string `json:"signature"`
 	}
@@ -151,6 +152,7 @@ func UpdateAsm(c *fiber.Ctx) error {
 
 	db.First(&asm, id)
 	asm.Name = updateData.Name
+	asm.CountryID = updateData.CountryID
 	asm.ProvinceID = updateData.ProvinceID
 	asm.Signature = updateData.Signature
 

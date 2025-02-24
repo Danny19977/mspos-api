@@ -11,56 +11,55 @@ import (
 	"github.com/kgermando/mspos-api/utils"
 )
 
-// Paginate
-func GetPaginatedUsers(c *fiber.Ctx) error {
-	db := database.DB
-
+// Helper function to get pagination parameters
+func getPaginationParams(c *fiber.Ctx) (int, int, int) {
 	page, err := strconv.Atoi(c.Query("page", "1"))
 	if err != nil || page <= 0 {
-		page = 1 // Default page number
+		page = 1
 	}
 	limit, err := strconv.Atoi(c.Query("limit", "15"))
 	if err != nil || limit <= 0 {
 		limit = 15
 	}
 	offset := (page - 1) * limit
+	return page, limit, offset
+}
 
+// Helper function to calculate total pages
+func calculateTotalPages(length int64, limit int) int {
+	totalPages := int(length) / limit
+	if remainder := int(length) % limit; remainder > 0 {
+		totalPages++
+	}
+	return totalPages
+}
+
+// Paginate
+func GetPaginatedUsers(c *fiber.Ctx) error {
+	db := database.DB
+	page, limit, offset := getPaginationParams(c)
 	search := c.Query("search", "")
 
 	var dataList []models.User
-
 	var length int64
-	var data []models.User
-	db.Model(data).Count(&length)
 
-	db.
-		Joins("JOIN provinces ON users.province_id=provinces.id").
+	db.Model(&models.User{}).Count(&length)
+	db.Joins("JOIN provinces ON users.province_id=provinces.id").
 		Joins("JOIN areas ON users.area_id=areas.id").
 		Joins("JOIN sups ON users.sup_id=sups.id").
-		// Preload("provinces").
-		// Preload("areas").
-		// Preload("sups").
 		Where("fullname ILIKE ? OR title ILIKE ?", "%"+search+"%", "%"+search+"%").
-		Select(`
-		users.id AS id, fullname, title, email, phone, 
-		provinces.name AS province, areas.name AS area, 
-		sups.name AS sup, status
-	`).
+		Select(`users.id AS id, fullname, title, email, phone, provinces.name AS province, areas.name AS area, sups.name AS sup, status`).
 		Offset(offset).
 		Limit(limit).
 		Order("users.updated_at DESC").
 		Find(&dataList)
 
-	if err != nil {
+	if err := db.Error; err != nil {
 		fmt.Println("error s'est produite: ", err)
 		return c.Status(500).SendString(err.Error())
 	}
 
-	// Calculate total number of pages
-	totalPages := len(dataList) / limit
-	if remainder := len(dataList) % limit; remainder > 0 {
-		totalPages++
-	}
+	totalPages := calculateTotalPages(length, limit)
 
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
@@ -80,53 +79,31 @@ func GetPaginatedUsers(c *fiber.Ctx) error {
 // Query data province
 func GetUserByProvinceID(c *fiber.Ctx) error {
 	provinceId := c.Params("province_id")
-
 	db := database.DB
-
-	page, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || page <= 0 {
-		page = 1 // Default page number
-	}
-	limit, err := strconv.Atoi(c.Query("limit", "15"))
-	if err != nil || limit <= 0 {
-		limit = 15
-	}
-	offset := (page - 1) * limit
-
+	page, limit, offset := getPaginationParams(c)
 	search := c.Query("search", "")
 
 	var dataList []models.User
-
 	var length int64
-	var data []models.User
-	db.Model(data).Where("province_id = ?", provinceId).Count(&length)
 
-	db.
-		Joins("JOIN provinces ON users.province_id=provinces.id").
+	db.Model(&models.User{}).Where("province_id = ?", provinceId).Count(&length)
+	db.Joins("JOIN provinces ON users.province_id=provinces.id").
 		Joins("JOIN areas ON users.area_id=areas.id").
-		Joins("JOIN sups ON users.sup_id=sups.id"). 
+		Joins("JOIN sups ON users.sup_id=sups.id").
 		Where("users.province_id = ?", provinceId).
 		Where("fullname ILIKE ? OR title ILIKE ?", "%"+search+"%", "%"+search+"%").
-		Select(`
-		users.id AS id, fullname, title, email, phone, 
-		provinces.name AS province, areas.name AS area, 
-		sups.name AS sup, status
-	`).
+		Select(`users.id AS id, fullname, title, email, phone, provinces.name AS province, areas.name AS area, sups.name AS sup, status`).
 		Offset(offset).
 		Limit(limit).
 		Order("users.updated_at DESC").
 		Find(&dataList)
 
-	if err != nil {
+	if err := db.Error; err != nil {
 		fmt.Println("error s'est produite: ", err)
 		return c.Status(500).SendString(err.Error())
 	}
 
-	// Calculate total number of pages
-	totalPages := len(dataList) / limit
-	if remainder := len(dataList) % limit; remainder > 0 {
-		totalPages++
-	}
+	totalPages := calculateTotalPages(length, limit)
 
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
@@ -146,53 +123,31 @@ func GetUserByProvinceID(c *fiber.Ctx) error {
 // Query data sup by area
 func GetUserBySupID(c *fiber.Ctx) error {
 	areaId := c.Params("sup_id")
-
 	db := database.DB
-
-	page, err := strconv.Atoi(c.Query("page", "1"))
-	if err != nil || page <= 0 {
-		page = 1 // Default page number
-	}
-	limit, err := strconv.Atoi(c.Query("limit", "15"))
-	if err != nil || limit <= 0 {
-		limit = 15
-	}
-	offset := (page - 1) * limit
-
+	page, limit, offset := getPaginationParams(c)
 	search := c.Query("search", "")
 
 	var dataList []models.User
-
 	var length int64
-	var data []models.User
-	db.Model(data).Where("area_id = ?", areaId).Count(&length)
 
-	db.
-		Joins("JOIN provinces ON users.province_id=provinces.id").
+	db.Model(&models.User{}).Where("area_id = ?", areaId).Count(&length)
+	db.Joins("JOIN provinces ON users.province_id=provinces.id").
 		Joins("JOIN areas ON users.area_id=areas.id").
-		Joins("JOIN sups ON users.sup_id=sups.id"). 
+		Joins("JOIN sups ON users.sup_id=sups.id").
 		Where("users.area_id = ?", areaId).
 		Where("fullname ILIKE ? OR title ILIKE ?", "%"+search+"%", "%"+search+"%").
-		Select(`
-		users.id AS id, fullname, title, email, phone, 
-		provinces.name AS province, areas.name AS area, 
-		sups.name AS sup, status
-	`).
+		Select(`users.id AS id, fullname, title, email, phone, provinces.name AS province, areas.name AS area, sups.name AS sup, status`).
 		Offset(offset).
 		Limit(limit).
 		Order("users.updated_at DESC").
 		Find(&dataList)
 
-	if err != nil {
+	if err := db.Error; err != nil {
 		fmt.Println("error s'est produite: ", err)
 		return c.Status(500).SendString(err.Error())
 	}
- 
-	// Calculate total number of pages
-	totalPages := len(dataList) / limit
-	if remainder := len(dataList) % limit; remainder > 0 {
-		totalPages++
-	}
+
+	totalPages := calculateTotalPages(length, limit)
 
 	pagination := map[string]interface{}{
 		"total_pages": totalPages,
@@ -208,7 +163,6 @@ func GetUserBySupID(c *fiber.Ctx) error {
 		"pagination": pagination,
 	})
 }
-
 
 // query all data
 func GetAllUsers(c *fiber.Ctx) error {
@@ -291,8 +245,9 @@ func CreateUser(c *fiber.Ctx) error {
 		Title:      p.Title,
 		Phone:      p.Phone,
 		AreaID:     p.AreaID,
+		CountryID:  p.CountryID,
 		ProvinceID: p.ProvinceID,
-		SupID:      p.SupID,
+		SubAreaID:  p.SubAreaID,
 		Role:       p.Role,
 		Permission: p.Permission,
 		Image:      p.Image,
@@ -318,8 +273,6 @@ func CreateUser(c *fiber.Ctx) error {
 		})
 	}
 
-	// database.DB.Create(user)
-
 	return c.JSON(
 		fiber.Map{
 			"status":  "success",
@@ -339,9 +292,10 @@ func UpdateUser(c *fiber.Ctx) error {
 		Email      string `json:"email"`
 		Title      string `json:"title"`
 		Phone      string `json:"phone"`
-		AreaID     uint   `json:"area_id"`
+		CountryID  uint   `json:"Country_id"`
 		ProvinceID uint   `json:"province_id"`
-		SupID      uint   `json:"sup_id"`
+		AreaID     uint   `json:"area_id"`
+		SubAreaID  uint   `json:"SubArea_id"`
 		Role       string `json:"role"`
 		Permission string `json:"permission"`
 		Image      string `json:"image"`
@@ -355,7 +309,7 @@ func UpdateUser(c *fiber.Ctx) error {
 		return c.Status(500).JSON(
 			fiber.Map{
 				"status":  "error",
-				"message": "Review your iunput",
+				"message": "Review your input",
 				"data":    nil,
 			},
 		)
@@ -368,9 +322,10 @@ func UpdateUser(c *fiber.Ctx) error {
 	user.Email = updateData.Email
 	user.Title = updateData.Title
 	user.Phone = updateData.Phone
-	user.AreaID = updateData.AreaID
+	user.CountryID = updateData.CountryID
 	user.ProvinceID = updateData.ProvinceID
-	user.SupID = updateData.SupID
+	user.AreaID = updateData.AreaID
+	user.SubAreaID = updateData.SubAreaID
 	user.Role = updateData.Role
 	user.Permission = updateData.Permission
 	user.Image = updateData.Image
@@ -387,7 +342,6 @@ func UpdateUser(c *fiber.Ctx) error {
 			"data":    user,
 		},
 	)
-
 }
 
 // Delete data
